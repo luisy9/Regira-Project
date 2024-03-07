@@ -30,7 +30,7 @@ export const Register = () => {
   return (
     <div className="w-screen">
       <div className="bg-register-img flex justify-center items-center h-screen">
-        <div className="py-10 border-2 rounded-md flex flex-col px-10 bg-white shadow-2xl">
+        <div className="w-96 py-10 border-2 rounded-md flex flex-col px-10 bg-white shadow-2xl">
           <div className="flex justify-center">
             <svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid" viewBox="0 0 256 256" className="w-10 h-10">
               <defs>
