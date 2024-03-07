@@ -98,7 +98,7 @@ router.get('/tarea/proyecto/:id', async (req, res, next) => {
   res.status(201).json(TareasProyecto);
 });
 
-//Endpoint para crear un proyecto
+//Endpoint para crear una nueva tarea
 router.post('/tarea', async (req, res, next) => {
   try {
     const { usuarios_id } = req.body;
@@ -116,8 +116,5 @@ router.post('/tarea', async (req, res, next) => {
     res.status(404).json({ error: error.message });
   }
 });
-
-
-// router.post();
 
 module.exports = router;

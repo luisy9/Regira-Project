@@ -3,7 +3,7 @@ const Sequelize = require('sequelize'); // Importa la llibreria Sequelize
 
 const bcrypt = require('bcrypt'); // Importa la llibreria bcrypt per a encriptar contrasenyes
 
-const sequelize = new Sequelize('regira', 'root', 'admin', {
+const sequelize = new Sequelize('regira', 'root', 'my-secret-pw', {
   //host: 'localhost',
   host: 'localhost', //IP de la base de dades
   dialect: 'mysql', // connectem a mysql
@@ -59,6 +59,7 @@ const Usuario = sequelize.define(
       allowNull: false, // No es permet valor nul per al nom
       unique: true,
     },
+
     nombre: {
       type: Sequelize.STRING,
       allowNull: false, // No es permet valor nul per a l'email
@@ -104,13 +105,17 @@ const Tarea = sequelize.define(
   { timestamps: false }
 );
 
-const Tag = sequelize.define('tag', {
-  nombre: {
-    type: Sequelize.STRING,
-    allowNull: false,
-    unique: false,
+const Tag = sequelize.define(
+  'tag',
+  {
+    nombre: {
+      type: Sequelize.STRING,
+      allowNull: false,
+      unique: false,
+    },
   },
-}, {timestamps: false});
+  { timestamps: false }
+);
 
 // hook per encriptar la contrasenya abans de desar un nou usuari
 Usuario.beforeCreate(async (user) => {

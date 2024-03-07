@@ -57,7 +57,7 @@ router.delete(
 //Endpoint para crear un proyecto
 router.post('/proyecto', async (req, res, next) => {
   try {
-    const { nombre, descripcion, active, created_ad, updated_ad, usuarios_id } =
+    const { nombre, descripcion, active, created_at, updated_at, usuarios_id } =
       req.body;
     const user = await Usuario.findByPk(usuarios_id); // Cerca l'usuari pel seu ID
     if (!user) {

@@ -66,6 +66,7 @@ router.post('/login', async (req, res) => {
   }
 });
 
+//Enpoint para que se registre el usuario
 router.post('/register', async (req, res) => {
   const { email, nombre, password } = req.body;
   try {
@@ -80,11 +81,13 @@ router.post('/register', async (req, res) => {
       return res.status(400).json({ error: 'El email ya existe' }); // Retorna error 400 si l'email ja està registrat
     }
 
-    const usuario = await Usuario.create({ email, nombre, password });
+    const usuario = await Usuario.create(req.body);
+    console.log(usuario);
     res.status(201).json(usuario);
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
 });
+
 
 module.exports = router;

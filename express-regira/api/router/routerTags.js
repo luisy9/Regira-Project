@@ -36,21 +36,18 @@ const checkToken = (req, res, next) => {
 //CRUD
 //CRUD
 
-router.get('/tag', async (req, res, next) => await readItems(req, res, Tag));
-
-router.get('/tag/:id', async (req, res, next) => await readItem(req, res, Tag));
-
+router.get('/tag', async (req, res, next) => await readItems(req, res, Tag)); //Mostrar todos los tags
+router.get('/tag/:id', async (req, res, next) => await readItem(req, res, Tag)); //Mostrar un Tag en especifico
 router.put(
   '/tag/:id',
   async (req, res, next) => await updateItem(req, res, Tag)
-);
-
+); //Hacer un update de un tag en especifico
 router.delete(
   '/tag/:id',
   async (req, res, next) => await deleteItem(req, res, Tag)
-);
+); //Hacer un delete de un tag en especifico
 
-//Endpoint para crear un proyecto
+//Endpoint para crear un tag
 router.post('/tag', async (req, res, next) => {
   try {
     const { nombre } = req.body;
@@ -72,28 +69,24 @@ router.post('/tag', async (req, res, next) => {
 //Endpoint para añadir una tarea con un tag en la tabla intermedia
 router.post('/tag/:tagId/tarea/:tareaId', async (req, res, next) => {
   try {
-    console.log('hola')
     const { tagId, tareaId } = req.params;
-    console.log('hola')
     if (!tagId || !tareaId) {
       return res
         .status(404)
         .json({ error: 'tienes que poner el pkTag y la pkTarea' });
     }
 
-    const pkTag = await Tag.findByPk(tagId);
-    const pkTarea = await Tarea.findByPk(tareaId);
+    const tag = await Tag.findByPk(tagId);
+    const tarea = await Tarea.findByPk(tareaId);
 
-    console.log(pkTag, pkTarea)
+    if (!tag || !tarea) {
+      return res.status(404).json({ error: 'No ha encontrado o un tag o una tarea con los ids que le has pasado' });
+    }
 
-    // if (!pkTag || !pkTarea) {
-    //   return res.status(404).json({ error: 'Hola' });
-    // }
-
-    const addTagTarea = await pkTag.addTarea(pkTarea);
-    res.status(201).json(addTagTarea);
+    await tarea.addTag(tag);
+    res.status(201).json({ message: 'Se ha añadido!' });
   } catch (error) {
-    // res.status(500).json({ error: 'No funciona el endpoint' });
+    res.status(500).json({ error: 'No funciona el endpoint' });
   }
 });
 
