@@ -6,7 +6,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 const SECRET_KEY = 'en-pinxo-li-va-dir-a-en-panxo'; // Clau secreta per a la generació de JWT
-const { Proyecto, Usuario } = require('../model'); // Importa els models de dades
+const { Proyecto, Usuario, Tarea, Comment } = require('../model'); // Importa els models de dades
 const { readItems, readItem, updateItem, deleteItem } = require('../generics');
 
 //AUTHENTICATION
@@ -93,21 +93,20 @@ router.get(
 //Endpoint para crear un comment
 router.post('/comment', checkToken, async (req, res, next) => {
   try {
-    const user = await Usuario.findByPk(req.userId); // Cerca l'usuari pel seu ID
-    if (!user) {
-      return res.status(500).json({ error: 'User no trobat' }); // Retorna error 500 si no es troba l'usuari
+    if (!user || !task) {
+      return res
+        .status(500)
+        .json({ error: 'El usuario o la tarea no encontrada' }); // Retorna error 500 si no es troba l'usuari
     }
 
-    req.body.userId = req.userId; // Estableix l'ID de l'usuari en el cos de la petició
-
-    const proyecto = await Comment.create(req.body);
-    res.status(201).json(proyecto);
+    const comment = await Comment.create(req.body);
+    res.status(201).json(comment);
   } catch (error) {
     res.status(404).json({ error: error.message });
   }
 });
 
-//Endpoint para crear un comment en un Proyecto especifico con un usuario especifico
+//Endpoint para crear un comment en una tarea especifico con un usuario especifico tiene que ir con el checkToken
 router.post('/comment/:tareaId/user/:idUser', async (req, res, next) => {
   const { title, commenttext } = req.body;
   const { tareaId, idUser } = req.params;
@@ -115,8 +114,8 @@ router.post('/comment/:tareaId/user/:idUser', async (req, res, next) => {
     const comment = await Comment.create({
       title,
       commenttext,
-      tareaId,
-      idUser,
+      usuario_id: idUser,
+      tareas_id: tareaId,
     });
     res.status(201).json(comment);
   } catch (error) {
