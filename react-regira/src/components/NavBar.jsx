@@ -22,13 +22,13 @@ export const NavBar = () => {
 
                 <div className="flex items-end text-lg flex-grow justify-between h-10">
                     <div className="">
-                        <a href="" className="mr-10 text-[#1E77FF]">Inicio</a>
-                        <a href="" className="mr-10 text-[#1E77FF]">Proyectos</a>
-                        <a href=""></a>
-                        <a href=""></a>
+                        <button className="mx-5 hover:bg-[#bdbec2] hover:border-none rounded-md px-5"><a href="" className="text-[#1E77FF]">Inicio</a></button>
+                        <button className="mx-5 hover:bg-[#bdbec2] hover:border-none rounded-md px-5"><a href="" className=" text-[#1E77FF]">Proyectos</a></button>
+                        {/* <a href=""></a>
+                        <a href=""></a> */}
                     </div>
                     <div className="">
-                        <a href="" className="mr-10">Login</a>
+                        <button className="border mx-10 px-6 py-0.5 rounded-md bg-[#1E77FF] text-white hover:bg-[#487eeb]"><a href="" className="">Login</a></button>
                         <a href="">Logout</a>
                     </div>
                 </div>
