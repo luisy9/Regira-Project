@@ -34,7 +34,6 @@ router.delete(
   async (req, res, next) => await deleteItem(req, res, Usuario)
 );
 
-
 //End poit para hacer el login de usuario
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
@@ -68,7 +67,9 @@ router.post('/login', async (req, res) => {
 
 //Enpoint para que se registre el usuario
 router.post('/register', async (req, res) => {
+  console.log(req.body)
   const { email, nombre, password } = req.body;
+  
   try {
     if (!email || !nombre || !password) {
       return res
@@ -88,6 +89,5 @@ router.post('/register', async (req, res) => {
     return res.status(500).json({ error: error.message });
   }
 });
-
 
 module.exports = router;
