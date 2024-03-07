@@ -1,3 +1,5 @@
+import { NavLink } from 'react-router-dom'
+
 export const NavBar = () => {
     return (
         <nav className=" bg-[#FFFFFF] py-6 w-screen relative">
@@ -17,19 +19,17 @@ export const NavBar = () => {
                         <h1 className="pl-1">Regira</h1>
                     </div>
 
-                    
+
                 </div>
 
                 <div className="flex items-end text-lg flex-grow justify-between h-10">
                     <div className="">
                         <button className="mx-5 hover:bg-[#bdbec2] hover:border-none rounded-md px-5"><a href="" className="text-[#1E77FF]">Inicio</a></button>
                         <button className="mx-5 hover:bg-[#bdbec2] hover:border-none rounded-md px-5"><a href="" className=" text-[#1E77FF]">Proyectos</a></button>
-                        {/* <a href=""></a>
-                        <a href=""></a> */}
                     </div>
                     <div className="">
-                        <button className="border mx-10 px-6 py-0.5 rounded-md bg-[#1E77FF] text-white hover:bg-[#487eeb]"><a href="" className="">Login</a></button>
-                        <a href="">Logout</a>
+                        <NavLink to='/register'><button className="border mx-10 px-6 py-0.5 rounded-md bg-[#1E77FF] text-white hover:bg-[#487eeb]"><a href="" className="">Register</a></button></NavLink>
+                        <NavLink to='login'>Login</NavLink>
                     </div>
                 </div>
 

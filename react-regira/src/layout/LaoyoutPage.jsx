@@ -1,7 +1,7 @@
 import { AppRegira } from '../AppRegira';
 import { NavBar } from '../components';
 
-export const LaoyoutPage = () => {
+export const LayoutPage = () => {
     return (
         <div className=''>
             <header>
@@ -14,4 +14,4 @@ export const LaoyoutPage = () => {
     )
 }
 
-export default LaoyoutPage
+export default LayoutPage
