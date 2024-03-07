@@ -2,7 +2,7 @@ import { Login } from '../components'
 
 export const LoginPage = () => {
   return (
-    <div>
+    <div className='w-screen'>
       <Login />
     </div>
   )
