@@ -45,7 +45,7 @@ export const NavBar = () => {
                                 <path d="M76 118c-4-4-10-4-13 1L1 245a7 7 0 0 0 6 10h88c3 0 5-1 6-4 19-39 8-98-25-133Z" fill="url(#a)" />
                                 <path d="M122 4c-35 56-33 117-10 163l42 84c1 3 4 4 7 4h87a7 7 0 0 0 7-10L134 4c-2-5-9-5-12 0Z" fill="#2681FF" />
                             </svg>
-                            <h1 className="pl-1 text-4xl">Regira</h1>
+                            <NavLink to='/'><h1 className="pl-1 text-4xl cursor-pointer">Regira</h1></NavLink>
                         </div>
 
 
@@ -53,8 +53,11 @@ export const NavBar = () => {
 
                     <div className="flex items-end text-lg flex-grow justify-between h-10">
                         <div className="">
-                            <NavLink to='/home'><button className="mx-5 hover:bg-[#bdbec2] hover:border-none rounded-md px-5"><a href="" className="text-[#1E77FF]">Inicio</a></button></NavLink>
+                            <NavLink to='/'><button className="mx-5 hover:bg-[#bdbec2] hover:border-none rounded-md px-5"><a href="" className="text-[#1E77FF]">Inicio</a></button></NavLink>
                             <button className="mx-5 hover:bg-[#bdbec2] hover:border-none rounded-md px-5"><a href="" className=" text-[#1E77FF]">Proyectos</a></button>
+                            <NavLink to='/newProject'><button className="mx-5 hover:bg-[#bdbec2] hover:border-none rounded-md px-5"><a href="" className="text-[#1E77FF]">New Project</a></button></NavLink>
+                            <NavLink to='/newTarea'><button className="mx-5 hover:bg-[#bdbec2] hover:border-none rounded-md px-5"><a href="" className="text-[#1E77FF]">New Tarea</a></button></NavLink>
+                            <NavLink to='/newTag'><button className="mx-5 hover:bg-[#bdbec2] hover:border-none rounded-md px-5"><a href="" className="text-[#1E77FF]">New Tag</a></button></NavLink>
                         </div>
                         <div className="">
                             {
