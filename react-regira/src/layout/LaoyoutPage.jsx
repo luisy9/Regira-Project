@@ -1,4 +1,5 @@
-import { AppRegira } from '../AppRegira';
+import { Outlet } from 'react-router-dom';
+// import { AppRegira } from '../AppRegira';
 import { NavBar } from '../components';
 
 export const LayoutPage = () => {
@@ -7,8 +8,8 @@ export const LayoutPage = () => {
             <header>
                 <NavBar />
             </header>
-            <div className="">
-                <AppRegira />
+            <div className="" id='detail'>
+                <Outlet />
             </div>
         </div>
     )

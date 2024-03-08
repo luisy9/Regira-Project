@@ -24,7 +24,7 @@ export const NavBar = () => {
 
                 <div className="flex items-end text-lg flex-grow justify-between h-10">
                     <div className="">
-                        <button className="mx-5 hover:bg-[#bdbec2] hover:border-none rounded-md px-5"><a href="" className="text-[#1E77FF]">Inicio</a></button>
+                        <NavLink to='/home'><button className="mx-5 hover:bg-[#bdbec2] hover:border-none rounded-md px-5"><a href="" className="text-[#1E77FF]">Inicio</a></button></NavLink>
                         <button className="mx-5 hover:bg-[#bdbec2] hover:border-none rounded-md px-5"><a href="" className=" text-[#1E77FF]">Proyectos</a></button>
                     </div>
                     <div className="">
