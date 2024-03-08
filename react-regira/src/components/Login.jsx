@@ -12,17 +12,18 @@ export const Login = () => {
     const onSubmitForm = () => {
         event.preventDefault();
 
-        const data = JSON.stringify({ email, password })
-        const options = {
-            method: "POST",
+        const credencials = { email, password };
+
+        const opcions = {
+            method: 'POST',
             credentials: 'include',
             headers: {
-                "Content-Type": "application/json",
+                'Content-Type': 'application/json'
             },
-            body: data,
+            body: JSON.stringify(credencials)
         }
 
-        fetch(url + '/login', options)
+        fetch(url + '/login', opcions)
             .then(response => response.json())
             .then(data => console.log(data), navigate('/'))
             .catch(error => console.error('Error:', error));
