@@ -11,6 +11,14 @@ export const NavBar = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
+        
+        fetch(url + `/users/${logued}`)
+            .then(res => res.json())
+            .then(data => console.log(data))
+    }, [])
+
+    useEffect(() => {
+        console.log(logued)
         //Hacer un fecth para poder rescatar el usuario actualmente logueado
         const opcions = {
             credentials: 'include',
@@ -27,9 +35,9 @@ export const NavBar = () => {
 
     //fn logout
     const handleLogout = () => {
-        document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        // document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
         setLogued(null);
-        window.location.href = '/';
+        // window.location.href = '/';
     }
 
     return (

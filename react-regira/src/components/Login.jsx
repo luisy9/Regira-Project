@@ -34,7 +34,6 @@ export const Login = () => {
                 setLogued(data.id)
             })
             .catch(error => console.error('Error:', error));
-
     }
 
     return (
@@ -56,7 +55,7 @@ export const Login = () => {
 
                 <h1 className="pt-7 text-center text-xl">Inicia session para continuar</h1>
                 <div className="py-0">
-                    <form className="" action="" onSubmit={onSubmitForm}>
+                    <form className="" onSubmit={onSubmitForm}>
                         <div className="py-4">
                             <input type="email" placeholder="Introduce tu email" className=" w-full rounded-md ring-1 ring-inset ring-gray-300 px-1 py-2 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-[#0052CC]" name="email" value={email} onChange={() => setEmail(event.target.value)} />
                         </div>
@@ -64,7 +63,7 @@ export const Login = () => {
                             <input type="password" placeholder="Introduce tu password" className=" w-full ring-1 ring-inset ring-gray-300 py-2 px-1 rounded-lg focus:outline-none focus:ring-2 focus:ring-inset focus:ring-[#0052CC]" name="password" value={password} onChange={() => setPassword(event.target.value)} />
                         </div>
                         <div className="pt-3">
-                            <button className="border-none rounded-md bg-[#0052CC] text-white w-full py-2 hover:bg-blue-500">Continuar</button>
+                            <button type="submit" className="border-none rounded-md bg-[#0052CC] text-white w-full py-2 hover:bg-blue-500">Continuar</button>
                         </div>
                     </form>
                 </div>
