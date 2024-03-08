@@ -55,10 +55,10 @@ router.delete(
 );
 
 //Endpoint para crear un proyecto
-router.post('/proyecto', checkToken , async (req, res, next) => {
+router.post('/proyecto', checkToken, async (req, res, next) => {
   try {
-    const { nombre, descripcion, active, created_at, updated_at, usuarios_id } =
-      req.body;
+    const { nombre, descripcion, active, usuarios_id } = req.body.data;
+
     const user = await Usuario.findByPk(usuarios_id); // Cerca l'usuari pel seu ID
     if (!user) {
       return res.status(500).json({ error: 'User no trobat' }); // Retorna error 500 si no es troba l'usuari
@@ -73,7 +73,7 @@ router.post('/proyecto', checkToken , async (req, res, next) => {
     }
 
     const proyecto = await Proyecto.create({
-      ...req.body,
+      ...req.body.data,
       usuarios_id,
     });
 

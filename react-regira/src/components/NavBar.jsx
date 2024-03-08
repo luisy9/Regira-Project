@@ -1,6 +1,6 @@
 import { NavLink, useNavigate } from 'react-router-dom'
 import { DropDown } from './'
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect } from 'react';
 import { contextRegira } from '../context';
 
 let url = 'http://localhost:3000/api';
@@ -8,27 +8,28 @@ let url = 'http://localhost:3000/api';
 export const NavBar = () => {
 
     const { logued, setLogued } = useContext(contextRegira);
-    const [cookie, setCookie] = useState('');
-    const [myUser, setMyUser] = useState([]);
     const navigate = useNavigate();
 
     useEffect(() => {
-        setCookie(document.cookie);
         //Hacer un fecth para poder rescatar el usuario actualmente logueado
         const opcions = {
             credentials: 'include',
         }
 
-        fetch(url + `/users/${1}`, opcions)
-            .then(res => res.json())
-            .then(data => console.log(data))
-    }, []);
+        if (logued) {
+            fetch(url + `/users/${logued}`, opcions)
+                .then(res => res.json())
+                .then(data => console.log(data))
+        }
+
+    }, [logued]);
 
 
     //fn logout
     const handleLogout = () => {
         document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-        navigate("/login");
+        setLogued(null);
+        window.location.href = '/';
     }
 
     return (
@@ -61,7 +62,7 @@ export const NavBar = () => {
                             <NavLink to='/newTarea'><button className="mx-5 hover:bg-[#bdbec2] hover:border-none rounded-md px-5"><a href="" className="text-[#1E77FF]">New Tarea</a></button></NavLink>
                             <NavLink to='/newTag'><button className="mx-5 hover:bg-[#bdbec2] hover:border-none rounded-md px-5"><a href="" className="text-[#1E77FF]">New Tag</a></button></NavLink>
                         </div>
-                        {console.log(logued)}
+                        <p>{logued}</p>
                         <div className="">
                             {
                                 logued ? <DropDown handleLogout={handleLogout} />
