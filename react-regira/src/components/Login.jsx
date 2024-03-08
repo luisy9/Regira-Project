@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useNavigate } from 'react-router-dom';
+import { contextRegira } from '../context'
+// import { useMiContexto } from '../hook'
 
 export const Login = () => {
 
-    // const { token, updateState } = useMiContexto();
+    const { logued, setLogued } = useContext(contextRegira);
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -28,8 +30,8 @@ export const Login = () => {
         fetch(url + '/login', opcions)
             .then(response => response.json())
             .then(data => {
-                console.log(data)
-                navigate('/')
+                setTimeout(() => navigate('/'), 0);
+                setLogued(data.id)
             })
             .catch(error => console.error('Error:', error));
 

@@ -1,12 +1,16 @@
-import { LayoutPage } from './layout/LaoyoutPage';
+import { useState } from 'react'
+import { RouterProvider } from 'react-router-dom';
+import { contextRegira } from './context'
+import { router } from './routes';
 
 export const AppRegira = () => {
 
+  const [logued, setLogued] = useState(null);
+
   return (
-    <>
-      <LayoutPage />
-    </>
+    <contextRegira.Provider value={{ logued, setLogued }}>
+      <RouterProvider router={router} />
+    </contextRegira.Provider>
   )
 }
-
 export default AppRegira;

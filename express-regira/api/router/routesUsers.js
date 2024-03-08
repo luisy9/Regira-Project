@@ -85,7 +85,7 @@ router.post('/login', async (req, res) => {
 
     // const yourUser
 
-    res.json({ message: 'Login success' }); // Retorna missatge d'èxit
+    res.json({ message: 'Login success', id: user.id }); // Retorna missatge d'èxit
   } catch (error) {
     return res.status(400).json({ error: error.message });
   }
@@ -109,7 +109,6 @@ router.post('/register', async (req, res) => {
     }
 
     const usuario = await Usuario.create(req.body);
-    console.log(usuario);
     res.status(201).json(usuario);
   } catch (error) {
     return res.status(500).json({ error: error.message });

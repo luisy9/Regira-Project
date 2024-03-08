@@ -1,12 +1,12 @@
 import { createBrowserRouter } from 'react-router-dom';
 import { Login, Register } from '../components';
 import { HomePage } from '../pages'
-import { AppRegira } from '../AppRegira';
+import { LayoutPage } from '../layout';
 
 export const router = createBrowserRouter([
   {
     path: '/',
-    element: <AppRegira />,
+    element: <LayoutPage />,
     children: [
       {
         index: true,

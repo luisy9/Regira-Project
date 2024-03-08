@@ -9,15 +9,15 @@ const createItem = async (req, res, Model) => {
 
 const readItem = async (req, res, Model) => {
   console.log(req)
-  try {
-    const item = await Model.findByPk(req.params.id);
-    if (!item) {
-      return res.status(404).json({ error: 'Item not found' });
-    }
-    res.json(item);
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
+  // try {
+  //   const item = await Model.findByPk(req.params.id);
+  //   if (!item) {
+  //     return res.status(404).json({ error: 'Item not found' });
+  //   }
+  //   res.json(item);
+  // } catch (error) {
+  //   res.status(400).json({ error: error.message });
+  // }
 };
 
 const readItems = async (req, res, Model) => {
