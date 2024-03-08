@@ -9,6 +9,28 @@ const SECRET_KEY = 'en-pinxo-li-va-dir-a-en-panxo'; // Clau secreta per a la gen
 const { Usuario } = require('../model'); // Importa els models de dades
 const { readItems, readItem, updateItem, deleteItem } = require('../generics');
 
+//MIDLEWARE
+//MIDLEWARE
+//MIDLEWARE
+//MIDLEWARE
+//MIDLEWARE
+
+// Middleware per verificar el JWT en la cookie
+const checkToken = (req, res, next) => {
+  const token = req.cookies?.token; // Obté el token des de la cookie de la petició
+  if (!token) {
+    return res.status(401).json({ error: 'Unauthorized' }); // Retorna error 401 si no hi ha cap token
+  }
+
+  try {
+    const decodedToken = jwt.verify(token, SECRET_KEY); // Verifica el token utilitzant la clau secreta
+    req.userId = decodedToken.userId; // Estableix l'ID d'usuari a l'objecte de la petició
+    next(); // Passa al següent middleware
+  } catch (error) {
+    return res.status(401).json({ error: 'Invalid token' }); // Retorna error 401 si el token és invàlid
+  }
+};
+
 //CRUD
 //CRUD
 //CRUD
@@ -18,11 +40,13 @@ const { readItems, readItem, updateItem, deleteItem } = require('../generics');
 
 router.get(
   '/users',
+  checkToken,
   async (req, res, next) => await readItems(req, res, Usuario)
 );
 
 router.get(
   '/users/:id',
+  checkToken,
   async (req, res, next) => await readItem(req, res, Usuario)
 );
 router.put(
@@ -59,6 +83,8 @@ router.post('/login', async (req, res) => {
 
     res.cookie('token', token, { httpOnly: false, maxAge: 7200000 }); // Estableix el token com una cookie
 
+    // const yourUser
+
     res.json({ message: 'Login success' }); // Retorna missatge d'èxit
   } catch (error) {
     return res.status(400).json({ error: error.message });
@@ -67,9 +93,9 @@ router.post('/login', async (req, res) => {
 
 //Enpoint para que se registre el usuario
 router.post('/register', async (req, res) => {
-  console.log(req.body)
+  console.log(req.body);
   const { email, nombre, password } = req.body;
-  
+
   try {
     if (!email || !nombre || !password) {
       return res

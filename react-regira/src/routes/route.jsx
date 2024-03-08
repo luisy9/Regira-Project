@@ -1,29 +1,29 @@
 import { createBrowserRouter } from 'react-router-dom';
 import { Login, Register } from '../components';
 import { HomePage } from '../pages'
-import LayoutPage from '../layout/LaoyoutPage';
+import { AppRegira } from '../AppRegira';
 
 export const router = createBrowserRouter([
   {
-    path: "/",
-    element: <LayoutPage />,
+    path: '/',
+    element: <AppRegira />,
     children: [
       {
-        path: "home",
+        index: true,
         element: <HomePage />
       }
     ]
   },
-
+  
   {
     path: '/login',
-    element: <Login />,
+    element: <Login />
   },
 
   {
     path: '/register',
-    element: <Register />,
-  },
+    element: <Register />
+  }
 ]);
 
 export default router;

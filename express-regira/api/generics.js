@@ -8,6 +8,7 @@ const createItem = async (req, res, Model) => {
 };
 
 const readItem = async (req, res, Model) => {
+  console.log(req)
   try {
     const item = await Model.findByPk(req.params.id);
     if (!item) {

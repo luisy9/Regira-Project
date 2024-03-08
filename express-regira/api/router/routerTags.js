@@ -48,7 +48,7 @@ router.delete(
 ); //Hacer un delete de un tag en especifico
 
 //Endpoint para crear un tag
-router.post('/tag', async (req, res, next) => {
+router.post('/tag', checkToken ,async (req, res, next) => {
   try {
     const { nombre } = req.body;
 

@@ -1,10 +1,11 @@
-import { HomePage } from './pages';
+import { LayoutPage } from './layout/LaoyoutPage';
+
 export const AppRegira = () => {
 
   return (
-    <div>
-      <HomePage />
-    </div>
+    <>
+      <LayoutPage />
+    </>
   )
 }
 

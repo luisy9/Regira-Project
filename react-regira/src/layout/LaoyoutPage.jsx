@@ -1,17 +1,20 @@
-import { Outlet } from 'react-router-dom';
-// import { AppRegira } from '../AppRegira';
+import { Outlet, Route } from 'react-router-dom';
 import { NavBar } from '../components';
+// import { MiContextoProvider } from '../context'
 
 export const LayoutPage = () => {
+
     return (
-        <div className=''>
-            <header>
-                <NavBar />
-            </header>
-            <div className="" id='detail'>
-                <Outlet />
+        // <MiContextoProvider>
+            <div className=''>
+                <header>
+                    <NavBar />
+                </header>
+                <div className="" id='detail'>
+                    <Outlet />
+                </div>
             </div>
-        </div>
+        // </MiContextoProvider>
     )
 }
 

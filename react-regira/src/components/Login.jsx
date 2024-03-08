@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 
 export const Login = () => {
 
+    // const { token, updateState } = useMiContexto();
+
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
@@ -25,7 +27,10 @@ export const Login = () => {
 
         fetch(url + '/login', opcions)
             .then(response => response.json())
-            .then(data => console.log(data), navigate('/'))
+            .then(data => {
+                console.log(data)
+                navigate('/')
+            })
             .catch(error => console.error('Error:', error));
 
     }

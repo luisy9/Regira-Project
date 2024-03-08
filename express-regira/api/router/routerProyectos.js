@@ -55,7 +55,7 @@ router.delete(
 );
 
 //Endpoint para crear un proyecto
-router.post('/proyecto', async (req, res, next) => {
+router.post('/proyecto', checkToken , async (req, res, next) => {
   try {
     const { nombre, descripcion, active, created_at, updated_at, usuarios_id } =
       req.body;

@@ -99,7 +99,7 @@ router.get('/tarea/proyecto/:id', async (req, res, next) => {
 });
 
 //Endpoint para crear una nueva tarea
-router.post('/tarea', async (req, res, next) => {
+router.post('/tarea', checkToken ,async (req, res, next) => {
   try {
     const { usuarios_id } = req.body;
     const user = await Usuario.findByPk(usuarios_id); // Cerca l'usuari pel seu ID
