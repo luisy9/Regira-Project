@@ -8,7 +8,6 @@ let url = 'http://localhost:3000/api';
 export const NavBar = () => {
 
     const { logued, setLogued } = useContext(contextRegira);
-    const navigate = useNavigate();
 
     useEffect(() => {
         
@@ -35,9 +34,9 @@ export const NavBar = () => {
 
     //fn logout
     const handleLogout = () => {
-        // document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-        setLogued(null);
-        // window.location.href = '/';
+        localStorage.removeItem('isLogued');
+        document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        window.location.href = '/';
     }
 
     return (

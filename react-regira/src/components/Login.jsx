@@ -31,8 +31,10 @@ export const Login = () => {
             .then(response => response.json())
             .then(data => {
                 setTimeout(() => navigate('/'), 0);
+                localStorage.setItem('isLogued', JSON.stringify(data.id));
                 setLogued(data.id)
             })
+
             .catch(error => console.error('Error:', error));
     }
 

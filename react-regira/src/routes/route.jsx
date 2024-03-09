@@ -1,6 +1,6 @@
 import { createBrowserRouter } from 'react-router-dom';
 import { Login, Register } from '../components';
-import { HomePage, NewProject, NewTarea } from '../pages'
+import { HomePage, NewProject, NewTarea, Project } from '../pages'
 import { LayoutPage } from '../layout';
 
 export const router = createBrowserRouter([
@@ -19,10 +19,14 @@ export const router = createBrowserRouter([
       {
         path: '/newProject',
         element: <NewProject />
+      },
+      {
+        path: '/proyecto/:id',
+        element: <Project />
       }
     ]
   },
-  
+
   {
     path: '/login',
     element: <Login />
