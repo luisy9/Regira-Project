@@ -8,7 +8,7 @@ export const LayoutPage = () => {
             <header>
                 <NavBar />
             </header>
-            <div className="" id='detail'>
+            <div className="container mx-auto mx-w-xl" id='detail'>
                 <Outlet />
             </div>
         </div>

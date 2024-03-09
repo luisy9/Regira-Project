@@ -1,7 +1,6 @@
 import { useEffect, useContext, useState } from "react"
 import { contextRegira } from '../context'
 import { NavLink } from 'react-router-dom';
-import { Project } from './';
 
 export const HomePage = () => {
 
@@ -14,9 +13,13 @@ export const HomePage = () => {
       credentials: 'include',
     };
 
-    fetch(url + '/proyecto/' + logued, opcions).then(res => res.json()).then(data => {
-      setProyectos([data]);
-    }).catch(error => console.log(error))
+    if (logued) {
+      fetch(url + '/proyecto/' + logued, opcions).then(res => res.json()).then(data => {
+        if (data) {
+          setProyectos([data]);
+        }
+      }).catch(error => console.log(error))
+    }
   }, [logued]);
 
   if (!proyectos) {
@@ -26,15 +29,14 @@ export const HomePage = () => {
   }
 
   return (
-    <div className="px-5">
+    <div className="">
       <h1 className="text-3xl text-center">Pagina Home</h1>
       <div className="flex gap-5">
         {
-          proyectos.map(proyecto => {
+          proyectos.length > 0 ? proyectos.map(proyecto => {
             return (
               <>
-              {/* {console.log(proyecto.nombre)} */}
-                <NavLink to={'/proyecto/'+proyecto.id}>
+                <NavLink to={'/proyecto/' + proyecto.id}>
                   <div className="py-2 px-4 border rounded-md w-62 h-40 cursor-pointer" key={proyecto.id}>
                     <h1 className="text-bold">{proyecto.nombre}</h1>
                     <p>{proyecto.descripcion}</p>
@@ -43,7 +45,7 @@ export const HomePage = () => {
                 </NavLink>
               </>
             )
-          })
+          }) : <></>
         }
       </div>
     </div>
