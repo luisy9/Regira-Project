@@ -5,7 +5,8 @@ import { router } from './routes';
 
 export const AppRegira = () => {
 
-  const [logued, setLogued] = useState(localStorage.getItem('isLogued') || null);
+  const loadStorage = document.cookie ? localStorage.getItem('isLogued') : null
+  const [logued, setLogued] = useState(loadStorage);
 
   return (
     <contextRegira.Provider value={{ logued, setLogued }}>

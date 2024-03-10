@@ -99,12 +99,35 @@ router.get('/tarea/proyecto/:id', async (req, res, next) => {
 });
 
 //Endpoint para crear una nueva tarea
+// router.post('/tarea', checkToken ,async (req, res, next) => {
+//   try {
+//     const { usuarios_id } = req.body;
+//     const user = await Usuario.findByPk(usuarios_id); // Cerca l'usuari pel seu ID
+//     if (!user) {
+//       return res.status(500).json({ error: 'User no trobat' }); // Retorna error 500 si no es troba l'usuari
+//     }
+
+//     req.body.usuarios_id = usuarios_id; // Estableix l'ID de l'usuari en el cos de la petició
+
+//     const tarea = await Tarea.create(req.body);
+
+//     res.status(201).json(tarea);
+//   } catch (error) {
+//     res.status(404).json({ error: error.message });
+//   }
+// });
+
+
+//Endpoint para crear una nueva tarea dentro de un proyecto, que tenga usuarios asignados y un author
 router.post('/tarea', checkToken ,async (req, res, next) => {
+  console.log(req.body)
   try {
-    const { usuarios_id } = req.body;
+    const { usuarios_id, proyectos_id } = req.body;
     const user = await Usuario.findByPk(usuarios_id); // Cerca l'usuari pel seu ID
-    if (!user) {
-      return res.status(500).json({ error: 'User no trobat' }); // Retorna error 500 si no es troba l'usuari
+    const proyecto = await Proyecto.findByPk(proyectos_id);
+
+    if (!user || !proyecto) {
+      return res.status(500).json({ error: 'El user o el proyecto no existen' }); // Retorna error 500 si no es troba l'usuari
     }
 
     req.body.usuarios_id = usuarios_id; // Estableix l'ID de l'usuari en el cos de la petició
@@ -116,5 +139,4 @@ router.post('/tarea', checkToken ,async (req, res, next) => {
     res.status(404).json({ error: error.message });
   }
 });
-
 module.exports = router;
