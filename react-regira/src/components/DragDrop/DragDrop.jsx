@@ -106,13 +106,6 @@ export const DragDrop = ({ allProjectTasks, id }) => {
         setValueInput('');
     }, [items])
 
-    //Add item
-    // useEffect(() => {
-    //     //Hacer el localStorage
-    //     localStorage.setItem('tasks', JSON.stringify(task));
-    //     setItems(task);
-    // }, [task]);
-
     const addTodo = (valueInput, valueSelect) => {
         //seteamos el objeto de tasks en el useStore de tasks
         setTask([...task, {
