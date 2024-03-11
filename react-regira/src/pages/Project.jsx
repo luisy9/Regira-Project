@@ -28,11 +28,13 @@ export const Project = () => {
         <h1 className="text-red-500">No estas autorizado!</h1>
       )
     } else {
+      console.log(logued)
       const opcions = {
         method: 'GET',
         credentials: 'include'
       }
 
+      //Quiero saber si ese usuario esta dentro de ese proyecto esto hay que cambiarlo!
       fetch(url + '/users', opcions).then(res => res.json()).then(data => {
         if (data.length > 0) {
           setAllUsers(data)
