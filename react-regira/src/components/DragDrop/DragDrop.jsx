@@ -75,7 +75,6 @@ const Box = ({ children, title, mouItem }) => {
 
 export const DragDrop = ({ allProjectTasks, id }) => {
     const [items, setItems] = useState(allProjectTasks);
-
     const [task, setTask] = useState([]);
     const [valueInput, setValueInput] = useState('');
 
@@ -98,21 +97,30 @@ export const DragDrop = ({ allProjectTasks, id }) => {
 
     //Reset Input
     useEffect(() => {
-        //localStorage
-        const opcions = {
-            method: 'POST',
-            credentials: 'include',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(task)
-        };
-        fetch(url + 'tarea', opcions)
-            .then(res => res.json())
-            .then(data => console.log(data))
-            .catch(error => console.log(error))
-        setValueInput('');
+        if (task) {
+            const opcions = {
+                method: 'PUT',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(task)
+            };
+            fetch(url + 'tarea', opcions)
+                .then(res => res.json())
+                .then(data => console.log(data))
+                .catch(error => console.log(error))
+            setValueInput('');
+        }
     }, [task]);
+
+    const onChangeTextArea = (value) => {
+        setValueInput(value);
+    }
+
+    const addTask = () => {
+        setTask({...task ,descripcion: valueInput});
+    }
 
     // const addTodo = (valueInput, valueSelect) => {
     //     //seteamos el objeto de tasks en el useStore de tasks
@@ -129,6 +137,10 @@ export const DragDrop = ({ allProjectTasks, id }) => {
 
     return (
         <DndProvider backend={HTML5Backend}>
+            
+            {/* <AddItem id={caixa} addTask={addTask}
+                                            onChangeTextArea={onChangeTextArea}
+                                            setValueInput={setValueInput} valueInput={valueInput} /> */}
             <div className="w-full flex gap-5">
                 {
                     CAIXES.map(caixa => (
@@ -139,7 +151,6 @@ export const DragDrop = ({ allProjectTasks, id }) => {
                                         <Item key={item.id} id={item.id} item={item}
                                             caixa={caixa} setTask={setTask} task={task}
                                             items={items} setItems={setItems} />
-                                        <AddItem id={caixa} />
                                     </>
                                 )) : []}
                             </Box>

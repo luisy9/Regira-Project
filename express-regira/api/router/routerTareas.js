@@ -117,8 +117,28 @@ router.get('/tarea/proyecto/:id', async (req, res, next) => {
 //   }
 // });
 
-//Endpoint para crear una nueva tarea dentro de un proyecto, que tenga usuarios asignados y un author
-router.post('/tarea', checkToken, async (req, res, next) => {
+router.post('/tarea/proyecto/:id', checkToken, async (req, res, next) => {
+  try {
+    const { author_id } = req.body;
+    const { id } = req.params.id;
+
+    const userId = await Usuario.findByPk(author_id);
+    const proyectoId = await Proyecto.findByPk(id);
+
+    if(!userId || !proyectoId){
+      return res.status(404).json({message: 'No existe el proyecto o el usuario'});
+    }
+
+    const tarea = await Tarea.create(req.body);
+    res.status(201).json(tarea);
+    
+  } catch (error) {
+    res.status(404).json({ error: error.message });
+  }
+});
+
+//Endpoint para hacer un UPDATE de las tareas dentro de un proyecto, que tenga usuarios asignados y un author
+router.update('/tarea', checkToken, async (req, res, next) => {
   try {
     const { body } = req;
     const resultado = await Promise.all(
@@ -159,7 +179,7 @@ router.post('/tarea', checkToken, async (req, res, next) => {
         return tarea;
       })
     );
-    
+
     res.status(201).json(resultado);
   } catch (error) {
     res.status(404).json({ error: error.message });

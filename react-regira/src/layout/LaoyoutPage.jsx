@@ -8,7 +8,7 @@ export const LayoutPage = () => {
             <header>
                 <NavBar />
             </header>
-            <div className='flex flex-grow' id='detail'>
+            <div className='flex flex-grow px-5' id='detail'>
                 <Outlet />
             </div>
         </div>

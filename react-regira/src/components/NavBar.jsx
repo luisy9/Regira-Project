@@ -27,6 +27,8 @@ export const NavBar = () => {
     //fn logout
     const handleLogout = () => {
         localStorage.removeItem('isLogued');
+        //Elimina el state de el navegador
+        window.history.replaceState(null, null , '/');
         document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
         window.location.href = '/';
     }
