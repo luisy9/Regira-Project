@@ -27,25 +27,22 @@ export const Project = () => {
       return (
         <h1 className="text-red-500">No estas autorizado!</h1>
       )
-    }
-  }, []);
-
-
-  useEffect(() => {
-    const opcions = {
-      method: 'GET',
-      credentials: 'include'
-    }
-
-    fetch(url + '/users', opcions).then(res => res.json()).then(data => {
-      if (data.length > 0) {
-        setAllUsers(data)
-        setUsuarioAsignado(data[0].id)
+    } else {
+      const opcions = {
+        method: 'GET',
+        credentials: 'include'
       }
-    }).then(fetch(url + '/tarea/proyecto/' + id, opcions)
-      .then(res => res.json())
-      .then(tasks => setAllProjectTasks(tasks)))
-      .catch(error => console.log(error));
+
+      fetch(url + '/users', opcions).then(res => res.json()).then(data => {
+        if (data.length > 0) {
+          setAllUsers(data)
+          setUsuarioAsignado(data[0].id)
+        }
+      }).then(fetch(url + '/tarea/proyecto/' + id, opcions)
+        .then(res => res.json())
+        .then(tasks => console.log(tasks)))
+        .catch(error => console.log(error));
+    }
   }, []);
 
   const newTareaInProject = () => {
@@ -61,7 +58,10 @@ export const Project = () => {
       body: JSON.stringify(data)
     }
 
-    fetch(url + '/tarea', opcions).then(res => res.json()).then(data => setPopUp(false)).catch(error => console.log(error));
+    fetch(url + '/tarea', opcions)
+      .then(res => res.json())
+      .then(data => setPopUp(false))
+      .catch(error => console.log(error));
   }
 
   const openModal = () => setPopUp(true);
