@@ -9,26 +9,19 @@ export const NavBar = () => {
 
     const { logued, setLogued } = useContext(contextRegira);
 
-    useEffect(() => {
-        
-        fetch(url + `/users/${logued}`)
-            .then(res => res.json())
-            .then(data => console.log(data))
-    }, [])
+    // useEffect(() => {
+    //     //Hacer un fecth para poder rescatar el usuario actualmente logueado
+    //     const opcions = {
+    //         credentials: 'include',
+    //     }
 
-    useEffect(() => {
-        //Hacer un fecth para poder rescatar el usuario actualmente logueado
-        const opcions = {
-            credentials: 'include',
-        }
+    //     if (logued) {
+    //         fetch(url + `/users/${logued}`, opcions)
+    //             .then(res => res.json())
+    //             .then()
+    //     }
 
-        if (logued) {
-            fetch(url + `/users/${logued}`, opcions)
-                .then(res => res.json())
-                .then()
-        }
-
-    }, [logued]);
+    // }, [logued]);
 
 
     //fn logout

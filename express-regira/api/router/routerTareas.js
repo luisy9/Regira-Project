@@ -123,31 +123,43 @@ router.post('/tarea', checkToken, async (req, res, next) => {
     const { body } = req;
     const resultado = await Promise.all(
       body.map(async (credencial) => {
-        const { usuarios_id, proyectos_id, tipo, titulo, prioridad, estado } =
-          credencial;
-        const user = await Usuario.findByPk(usuarios_id); // Cerca l'usuari pel seu ID
-        const proyecto = await Proyecto.findByPk(proyectos_id);
-
-        if (!user || !proyecto) {
-          return res
-            .status(500)
-            .json({ error: 'El user o el proyecto no existen' }); // Retorna error 500 si no es troba l'usuari
-        }
-        const tarea = await Tarea.create({
+        const {
+          id,
+          usuarios_id,
+          proyectos_id,
           tipo,
           titulo,
           prioridad,
           estado,
-          usuarios_id,
           author_id,
-          proyectos_id,
+          descripcion,
+        } = credencial;
+        const user = await Usuario.findByPk(usuarios_id); // Cerca l'usuari pel seu ID
+        const proyecto = await Proyecto.findByPk(proyectos_id);
+        const idTarea = await Tarea.findByPk(id);
+
+        if (!user || !proyecto || !id) {
+          return res
+            .status(500)
+            .json({ error: 'El user o el proyecto no existen' }); // Retorna error 500 si no es troba l'usuari
+        }
+
+        //Tengo que hacer un update
+        const tarea = await idTarea.update({
+          tipo: tipo,
+          titulo: titulo,
+          descripcion: null,
+          prioridad: prioridad,
+          estado: estado,
+          proyectos_id: proyectos_id,
+          usuarios_id: usuarios_id,
+          author_id: author_id,
         });
 
         return tarea;
       })
     );
-    // req.body.usuarios_id = usuarios_id; // Estableix l'ID de l'usuari en el cos de la petició
-
+    
     res.status(201).json(resultado);
   } catch (error) {
     res.status(404).json({ error: error.message });

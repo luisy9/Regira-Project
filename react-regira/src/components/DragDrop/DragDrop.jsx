@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { Items } from './Items'
+import AddItem from './AddItem';
 
 const ItemType = 'ITEM';
 const url = 'http://localhost:3000/api/';
@@ -62,18 +63,11 @@ const Box = ({ children, title, mouItem }) => {
         }),
     });
 
-    //No me gusta pero funciona
-    // const colors = () => {
-    //     if (title === 'Do') return 'green';
-    //     if (title === 'Decide') return 'yellow';
-    //     if (title === 'Delegate') return 'blue';
-    // }
-
     return (
-        <div ref={drop} className={`bg-[#F7F8F9] p-8 min-h-[400px] border rounded-md h-full ${isOver ? 'bg-gray-700' : ''}${title === 'Delete' ? 'grid place-content-center' : ''} ${title === 'Delete' && isOver && 'bg-red-600 bg-opacity-15 border-red-600'}`}>
+        <div ref={drop} className={`bg-[#F7F8F9] p-8 min-h-[400px] border rounded-md h-full ${isOver ? 'border-[#2681FF]' : ''}${title === 'Delete' ? 'grid place-content-center' : ''} ${title === 'Delete' && isOver && 'bg-red-600 bg-opacity-15 border-red-600'}`}>
             <h2 className={`text-2xl text-start mb-4 text-bold`}>{title === 'Delete' ?
-                    <img src='/eliminar.png' alt='delete' className='w-12 h-12' />
-                    : `${title}`}</h2>
+                <img src='/eliminar.png' alt='delete' className='w-12 h-12' />
+                : `${title}`}</h2>
             {children}
         </div>
     );
@@ -81,19 +75,20 @@ const Box = ({ children, title, mouItem }) => {
 
 export const DragDrop = ({ allProjectTasks, id }) => {
     const [items, setItems] = useState(allProjectTasks);
+
     const [task, setTask] = useState([]);
     const [valueInput, setValueInput] = useState('');
 
     // funció que "Mou" un element d'una caixa a l'altra
     const mouItem = (item, caixa) => {
-        console.log(item)
         const nousItems = items.map(it => {
             if (it.id === item) {
                 it.estado = caixa;
             }
             return it;
         });
-        setItems(nousItems)
+        // setItems(nousItems)
+        setTask(nousItems);
     }
 
     useEffect(() => {
@@ -110,43 +105,45 @@ export const DragDrop = ({ allProjectTasks, id }) => {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(items)
+            body: JSON.stringify(task)
         };
-
-        console.log(items)
-        fetch(url + 'tarea', opcions).then(res => res.json()).then(data => setItems([data])).catch(error => console.log(error))
+        fetch(url + 'tarea', opcions)
+            .then(res => res.json())
+            .then(data => console.log(data))
+            .catch(error => console.log(error))
         setValueInput('');
-    }, [items])
+    }, [task]);
 
-    const addTodo = (valueInput, valueSelect) => {
-        //seteamos el objeto de tasks en el useStore de tasks
-        setTask([...task, {
-            ['id']: getIdRandom(), ['nom']:
-                valueInput, ['caixa']: valueSelect
-        }]);
-    }
+    // const addTodo = (valueInput, valueSelect) => {
+    //     //seteamos el objeto de tasks en el useStore de tasks
+    //     setTask([...task, {
+    //         ['id']: getIdRandom(), ['nom']:
+    //             valueInput, ['caixa']: valueSelect
+    //     }]);
+    // }
 
-    const getIdRandom = () => {
-        return Math.random() * 1000;
-    }
+    // const getIdRandom = () => {
+    //     return Math.random() * 1000;
+    // }
 
 
     return (
         <DndProvider backend={HTML5Backend}>
             <div className="w-full flex gap-5">
-                { console.log(items)}
                 {
                     CAIXES.map(caixa => (
                         <div className='w-full' key={caixa}>
                             <Box key={caixa} title={caixa} mouItem={mouItem}>
                                 {items ? items.filter(item => item.estado === caixa).map(item => (
-                                    <Item key={item.id} id={item.id} item={item}
-                                        caixa={caixa} setTask={setTask} task={task}
-                                        items={items} setItems={setItems} />
+                                    <>
+                                        <Item key={item.id} id={item.id} item={item}
+                                            caixa={caixa} setTask={setTask} task={task}
+                                            items={items} setItems={setItems} />
+                                        <AddItem id={caixa} />
+                                    </>
                                 )) : []}
                             </Box>
                         </div>
-
                     ))
                 }
             </div>
