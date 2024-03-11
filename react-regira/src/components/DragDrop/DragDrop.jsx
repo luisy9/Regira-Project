@@ -1,79 +1,150 @@
-import { useState } from 'react';
-import {
-  DndContext,
-  closestCenter,
-  KeyboardSensor,
-  PointerSensor,
-  useSensor,
-  useSensors,
-} from '@dnd-kit/core';
-import {
-  arrayMove,
-  SortableContext,
-  sortableKeyboardCoordinates,
-  horizontalListSortingStrategy,
-} from '@dnd-kit/sortable';
+import { useEffect, useState } from 'react';
+import { DndProvider, useDrag, useDrop } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
+import { Items } from './Items'
 
-import { ShowTasksProject } from './ShowTasksProject';
-import { BoxTasks } from './BoxTasks'
+const ItemType = 'ITEM';
+const url = 'http://localhost:3000/api/';
+const CAIXES = ['doing', 'finished', 'paused', 'not doing']
 
-export const DragDrop = ({ allProjectTasks }) => {
-  console.log(allProjectTasks)
-  // const [items, setItems] = useState(allProjectTasks);
-  // const [box, setBox] = useState(['doing', 'finished', 'paused', 'not doing']);
 
-  // const sensors = useSensors(
-  //   useSensor(PointerSensor),
-  //   useSensor(KeyboardSensor, {
-  //     coordinateGetter: sortableKeyboardCoordinates,
-  //   })
-  // );
+const Item = ({ id, name, caixa, setTask, task, items, setItems }) => {
+    console.log(id, name)
 
-  // return (
-  //   <div className='border '>
-  //     <DndContext
-  //       sensors={sensors}
-  //       collisionDetection={closestCenter}
-  //       onDragEnd={handleDragEnd}
-  //     >
-  //       {
-  //         box.map(b => {
-  //           return (
-  //             <>
-  //               <BoxTasks horizontalListSortingStrategy={horizontalListSortingStrategy} name={b}>
-  //                 {
-  //                   items.filter(item => item.estado === b).items.map(item => {
-  //                     <ShowTasksProject key={item.id} id={item.id} />
-  //                   })
-  //                 }
-  //               </BoxTasks>
-  //             </>
-  //           )
-  //         })
-  //       }
-  //       {/* <SortableContext
-  //         items={items}
-  //         strategy={verticalListSortingStrategy}
-  //       >
-  //         {items.map(item => <ShowTasksProject key={item.id} id={item.id} />)}
-  //       </SortableContext> */}
-  //     </DndContext>
-  //   </div>
+    const [{ isDragging }, drag] = useDrag({
+        type: ItemType,
+        item: { type: ItemType, id },
+        collect: monitor => ({
+            isDragging: !!monitor.isDragging(),
+        }),
+    });
 
-  // );
+    // const deleteTask = (id) => {
+    //     const deleteTask = task.filter(e => e.id !== id);
+    //     setTask(deleteTask);
+    // }
 
-  // function handleDragEnd(event) {
-  //   const { active, over } = event;
+    // const colorTask = () => {
+    //     if (caixa === 'doing') return 'bg-green-300';
+    //     if (caixa === 'finished') return 'bg-yellow-300';
+    //     if (caixa === 'paused') return 'bg-sky-400';
+    // }
 
-  //   if (active.id !== over.id) {
-  //     setItems((items) => {
-  //       const oldIndex = items.indexOf(active.id);
-  //       const newIndex = items.indexOf(over.id);
+    return (
+        <>
+            <div
+                ref={drag}
+                className={`border p-4 mb-4 flex justify-between active:border-[#A68AFA] text-white rounded-lg cursor-grab`}
+                style={{ opacity: isDragging ? 0.5 : 1 }}
+            >
+                <p>{name}</p>
+            </div>
+        </>
+    );
+};
 
-  //       return arrayMove(items, oldIndex, newIndex);
-  //     });
-  //   }
-  // }
-}
+const Box = ({ children, title, mouItem }) => {
+    const [{ isOver }, drop] = useDrop({
+        accept: ItemType,
+        drop: (item, monitor) => {
+            // Obtenir el nom del item que s'ha deixat anar
+            const itemName = item.id;
+            // Obtain el nom de la caixa on es deixa anar
+            const containerTitle = title;
+            // Moure l'item d'un lloc a l'altre
+            mouItem(itemName, containerTitle)
+        },
+        collect: monitor => ({
+            isOver: !!monitor.isOver(),
+        }),
+    });
 
-export default DragDrop
+    //No me gusta pero funciona
+    // const colors = () => {
+    //     if (title === 'Do') return 'green';
+    //     if (title === 'Decide') return 'yellow';
+    //     if (title === 'Delegate') return 'blue';
+    // }
+
+    return (
+        <div ref={drop} className={`bg-[#292929] p-8 min-h-[400px] border h-full 
+        ${isOver ? 'bg-gray-700' : ''}${title === 'Delete' ? 'grid place-content-center' : ''} ${title === 'Delete' && isOver && 'bg-red-600 bg-opacity-15 border-red-600'}`}>
+            <h2 className={`text-xl text-center mb-4`}
+                style={{color: 'red'}}>{title === 'Delete' ?
+                    <img src='/eliminar.png' alt='delete' className='w-12 h-12' />
+                    : `${title}`}</h2>
+            {children}
+        </div>
+    );
+};
+
+export const DragDrop = ({ allProjectTasks, id }) => {
+    const [items, setItems] = useState(allProjectTasks);
+    const [task, setTask] = useState([]);
+    const [valueInput, setValueInput] = useState('');
+
+    // funció que "Mou" un element d'una caixa a l'altra
+    const mouItem = (item, caixa) => {
+        console.log(item)
+        const nousItems = items.map(it => {
+            if (it.id === item) {
+                it.estado = caixa;
+            }
+            return it;
+        });
+        console.log(nousItems)
+        setItems(nousItems)
+    }
+
+    useEffect(() => {
+        const storedTasks = localStorage.getItem('tasks');
+        setTask(JSON.parse(storedTasks));
+    }, []);
+
+    //Reset Input
+    useEffect(() => {
+        setValueInput('');
+    }, [items])
+
+    //Add item
+    // useEffect(() => {
+    //     //Hacer el localStorage
+    //     localStorage.setItem('tasks', JSON.stringify(task));
+    //     setItems(task);
+    // }, [task]);
+
+    const addTodo = (valueInput, valueSelect) => {
+        //seteamos el objeto de tasks en el useStore de tasks
+        setTask([...task, {
+            ['id']: getIdRandom(), ['nom']:
+                valueInput, ['caixa']: valueSelect
+        }]);
+    }
+
+    const getIdRandom = () => {
+        return Math.random() * 1000;
+    }
+
+
+    return (
+        <DndProvider backend={HTML5Backend}>
+            {console.log(items)}
+            <div className="w-full flex">
+                {
+                    CAIXES.map(caixa => (
+                        <div className='w-full' key={caixa}>
+                            <Box key={caixa} title={caixa} mouItem={mouItem}>
+                                {items.filter(item => item.estado === caixa).map(item => (
+                                    <Item key={item.id} id={item.id} name={item.titulo} caixa={caixa} setTask={setTask} task={task} items={items} setItems={setItems} />
+                                ))}
+                            </Box>
+                        </div>
+
+                    ))
+                }
+            </div>
+        </DndProvider>
+    );
+};
+
+export default DragDrop;

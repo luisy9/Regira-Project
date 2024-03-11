@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { contextRegira } from '../context';
-import ShowTasksProject from "../components/ShowTasksProject";
+// import { ShowTasksProject } from "../components";
 import { DragDrop } from '../components';
 
 export const Project = () => {
@@ -37,7 +37,7 @@ export const Project = () => {
         setAllUsers(data)
         setUsuarioAsignado(data[0].id)
       }
-    }).then(fetch(url + '/tarea', opcions).then(res => res.json()).then(tasks => setAllProjectTasks(tasks))).catch(error => console.log(error));
+    }).then(fetch(url + '/tarea/proyecto/'+id, opcions).then(res => res.json()).then(tasks => setAllProjectTasks(tasks))).catch(error => console.log(error));
   }, [logued]);
 
   const { id } = useParams();
@@ -61,7 +61,8 @@ export const Project = () => {
   }
 
   return (
-    <div className="h-full flex justify-center items-center">
+    <>
+    <div className="w-full border">
       {
         popUp ? (
           <div className="z-40 flex justify-center items-center absolute top-0 left-0 w-full h-full backdrop-blur-sm">
@@ -123,20 +124,22 @@ export const Project = () => {
           </div>
         ) : null
       }
-
       {
         allProjectTasks.length > 0 ? (
-          <>
-            <DragDrop allProjectTasks={allProjectTasks} />
-            {/* <ShowTasksProject allProjectTasks={allProjectTasks} /> */}
-          </>) : <div className="flex flex-col">
-          <h1>Tus tareas apareceran aqui</h1>
-          <div className="flex justify-center py-4">
-            <button className="border py-1 rounded-md px-5 text-white bg-[#0054CD] hover:cursor-pointer hover:bg-[#4d97ff]" onClick={() => setPopUp(true)}>Crear tarea</button>
+          <div className="flex justify-start h-full">
+            <DragDrop allProjectTasks={allProjectTasks} id={id} />
           </div>
-        </div>
+        )
+          : <div className="flex flex-col">
+            <h1>Tus tareas apareceran aqui</h1>
+            <div className="flex justify-center py-4">
+              <button className="border py-1 rounded-md px-5 text-white bg-[#0054CD] hover:cursor-pointer hover:bg-[#4d97ff]" onClick={() => setPopUp(true)}>Crear tarea</button>
+            </div>
+          </div>
       }
     </div>
+    </>
+
   )
 }
 

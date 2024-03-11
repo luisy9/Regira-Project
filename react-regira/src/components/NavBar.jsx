@@ -1,4 +1,4 @@
-import { NavLink, useNavigate } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 import { DropDown } from './'
 import { useContext, useEffect } from 'react';
 import { contextRegira } from '../context';
@@ -17,7 +17,6 @@ export const NavBar = () => {
     }, [])
 
     useEffect(() => {
-        console.log(logued)
         //Hacer un fecth para poder rescatar el usuario actualmente logueado
         const opcions = {
             credentials: 'include',
@@ -26,7 +25,7 @@ export const NavBar = () => {
         if (logued) {
             fetch(url + `/users/${logued}`, opcions)
                 .then(res => res.json())
-                .then(data => console.log(data))
+                .then()
         }
 
     }, [logued]);

@@ -4,11 +4,11 @@ import { NavBar } from '../components';
 export const LayoutPage = () => {
 
     return (
-        <div className='h-screen'>
+        <div className='flex flex-col h-screen'>
             <header>
                 <NavBar />
             </header>
-            <div className="container mx-auto mx-w-xl h-4/5" id='detail'>
+            <div className='flex flex-grow' id='detail'>
                 <Outlet />
             </div>
         </div>
