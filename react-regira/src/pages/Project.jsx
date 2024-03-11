@@ -62,7 +62,7 @@ export const Project = () => {
 
   return (
     <>
-    <div className="w-full border">
+    <div className="w-full">
       {
         popUp ? (
           <div className="z-40 flex justify-center items-center absolute top-0 left-0 w-full h-full backdrop-blur-sm">

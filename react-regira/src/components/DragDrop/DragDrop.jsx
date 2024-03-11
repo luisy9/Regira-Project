@@ -8,8 +8,7 @@ const url = 'http://localhost:3000/api/';
 const CAIXES = ['doing', 'finished', 'paused', 'not doing']
 
 
-const Item = ({ id, name, caixa, setTask, task, items, setItems }) => {
-    console.log(id, name)
+const Item = ({ id, item, caixa, setTask, task, items, setItems }) => {
 
     const [{ isDragging }, drag] = useDrag({
         type: ItemType,
@@ -24,20 +23,24 @@ const Item = ({ id, name, caixa, setTask, task, items, setItems }) => {
     //     setTask(deleteTask);
     // }
 
-    // const colorTask = () => {
-    //     if (caixa === 'doing') return 'bg-green-300';
-    //     if (caixa === 'finished') return 'bg-yellow-300';
-    //     if (caixa === 'paused') return 'bg-sky-400';
-    // }
+    const colorTask = () => {
+        if (item.prioridad === 'High') return 'bg-red-400';
+        if (item.prioridad === 'Medium') return 'bg-yellow-400';
+        if (item.prioridad === 'Low') return 'bg-sky-400';
+    }
 
     return (
         <>
             <div
                 ref={drag}
-                className={`border p-4 mb-4 flex justify-between active:border-[#A68AFA] text-white rounded-lg cursor-grab`}
+                className={`border shadow-lg px-3 py-1 mb-4 w-full h-40 active:border-2 active:border-[#2681FF] text-black rounded-md cursor-grab`}
                 style={{ opacity: isDragging ? 0.5 : 1 }}
             >
-                <p>{name}</p>
+                <h1 className='text-bold text-2xl'>{item.tipo}</h1>
+                <p className='text-sm'>{item.titulo}</p>
+                <div className={`my-2 border w-fit px-1 rounded-md ${colorTask()}`}>
+                    <p>{item.prioridad}</p>
+                </div>
             </div>
         </>
     );
@@ -67,10 +70,8 @@ const Box = ({ children, title, mouItem }) => {
     // }
 
     return (
-        <div ref={drop} className={`bg-[#292929] p-8 min-h-[400px] border h-full 
-        ${isOver ? 'bg-gray-700' : ''}${title === 'Delete' ? 'grid place-content-center' : ''} ${title === 'Delete' && isOver && 'bg-red-600 bg-opacity-15 border-red-600'}`}>
-            <h2 className={`text-xl text-center mb-4`}
-                style={{color: 'red'}}>{title === 'Delete' ?
+        <div ref={drop} className={`bg-[#F7F8F9] p-8 min-h-[400px] border rounded-md h-full ${isOver ? 'bg-gray-700' : ''}${title === 'Delete' ? 'grid place-content-center' : ''} ${title === 'Delete' && isOver && 'bg-red-600 bg-opacity-15 border-red-600'}`}>
+            <h2 className={`text-2xl text-start mb-4 text-bold`}>{title === 'Delete' ?
                     <img src='/eliminar.png' alt='delete' className='w-12 h-12' />
                     : `${title}`}</h2>
             {children}
@@ -92,7 +93,6 @@ export const DragDrop = ({ allProjectTasks, id }) => {
             }
             return it;
         });
-        console.log(nousItems)
         setItems(nousItems)
     }
 
@@ -103,6 +103,18 @@ export const DragDrop = ({ allProjectTasks, id }) => {
 
     //Reset Input
     useEffect(() => {
+        //localStorage
+        const opcions = {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(items)
+        };
+
+        console.log(items)
+        fetch(url + 'tarea', opcions).then(res => res.json()).then(data => setItems([data])).catch(error => console.log(error))
         setValueInput('');
     }, [items])
 
@@ -121,15 +133,17 @@ export const DragDrop = ({ allProjectTasks, id }) => {
 
     return (
         <DndProvider backend={HTML5Backend}>
-            {console.log(items)}
-            <div className="w-full flex">
+            <div className="w-full flex gap-5">
+                { console.log(items)}
                 {
                     CAIXES.map(caixa => (
                         <div className='w-full' key={caixa}>
                             <Box key={caixa} title={caixa} mouItem={mouItem}>
-                                {items.filter(item => item.estado === caixa).map(item => (
-                                    <Item key={item.id} id={item.id} name={item.titulo} caixa={caixa} setTask={setTask} task={task} items={items} setItems={setItems} />
-                                ))}
+                                {items ? items.filter(item => item.estado === caixa).map(item => (
+                                    <Item key={item.id} id={item.id} item={item}
+                                        caixa={caixa} setTask={setTask} task={task}
+                                        items={items} setItems={setItems} />
+                                )) : []}
                             </Box>
                         </div>
 
