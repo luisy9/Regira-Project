@@ -138,7 +138,7 @@ router.post('/tarea/proyecto/:id', checkToken, async (req, res, next) => {
 });
 
 //Endpoint para hacer un UPDATE de las tareas dentro de un proyecto, que tenga usuarios asignados y un author
-router.update('/tarea', checkToken, async (req, res, next) => {
+router.put('/tarea', checkToken, async (req, res, next) => {
   try {
     const { body } = req;
     const resultado = await Promise.all(

@@ -97,7 +97,7 @@ export const DragDrop = ({ allProjectTasks, id }) => {
 
     //Reset Input
     useEffect(() => {
-        if (task) {
+        if (task.length > 0) {
             const opcions = {
                 method: 'PUT',
                 credentials: 'include',
@@ -108,7 +108,7 @@ export const DragDrop = ({ allProjectTasks, id }) => {
             };
             fetch(url + 'tarea', opcions)
                 .then(res => res.json())
-                .then(data => console.log(data))
+                .then(data => setItems(data))
                 .catch(error => console.log(error))
             setValueInput('');
         }

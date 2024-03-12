@@ -42,7 +42,7 @@ export const Project = () => {
         }
       }).then(fetch(url + '/tarea/proyecto/' + id, opcions)
         .then(res => res.json())
-        .then(tasks => console.log(tasks)))
+        .then(tasks => setAllProjectTasks(tasks)))
         .catch(error => console.log(error));
     }
   }, []);
