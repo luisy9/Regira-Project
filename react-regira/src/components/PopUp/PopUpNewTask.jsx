@@ -8,12 +8,17 @@ export const PopUpNewTask = (
         <div className="z-50 flex justify-center items-center absolute top-0 left-0 w-full h-full backdrop-blur-sm">
             <div className="flex flex-col justify-end border border-[#0054CD] bg-white w-3/6 rounded-md px-5 py-5">
                 <div className="flex justify-between">
-                    <h1 className="text-4xl text-bold">Añade una nueva tarea</h1>
-                    <div className="flex justify-center items-center text-2xl hover:bg-slate-200" onClick={() => setPopUp(false)}>
+                    <h1 className="text-4xl text-bold">Nueva Tarea</h1>
+                    <div className="flex justify-center items-center text-2xl hover:bg-slate-200 hover:rounded-md" onClick={() => setPopUp(false)}>
                         <button className="cursor-pointer px-2 w-10 h-full rounded-full">X</button>
                     </div>
                 </div>
                 <form className="h-full flex flex-col justify-end" onSubmit={newTareaInProject}>
+                    <div className="py-3">
+                        <label className="">Titulo de la tarea: </label>
+                        <input required type="text" name="titulo" className="border rounded-md border-[#0054CD] placeholder:px-1 ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-1 focus:ring-inset focus:ring-[#0052CC]"
+                            placeholder="Titulo de la tarea" onChange={() => setTitulo(event.target.value)} />
+                    </div>
                     <div className="py-3">
                         <label htmlFor="">Tipo tarea: </label>
                         <select onChange={() => setTypeTask(event.target.value)} value={typeTask} className="border-2 rounded-md pr-10">
@@ -22,10 +27,6 @@ export const PopUpNewTask = (
                             <option value="task">task</option>
                             <option value="history">history</option>
                         </select>
-                    </div>
-                    <div className="py-3">
-                        <label className="">Titulo de la tarea: </label>
-                        <input required type="text" name="titulo" className="border rounded-md border-[#0054CD] placeholder:px-1" placeholder="Titulo de la tarea" onChange={() => setTitulo(event.target.value)} />
                     </div>
                     <div className="py-3">
                         <label htmlFor="">Prioridad: </label>
@@ -53,6 +54,10 @@ export const PopUpNewTask = (
                                 allUsers?.map(user => <option value={user.id} key={user.id}>{user.email}</option>)
                             }
                         </select>
+                    </div>
+                    <div className="">
+                        <textarea className="border w-full h-20 rounded-md border-[#0054CD] placeholder:px-2 placeholder:py-1 ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-1 focus:ring-inset focus:ring-[#0052CC]" placeholder="Añade la descripcion">
+                        </textarea>
                     </div>
                     <div className="w-full pt-3">
                         <div className="">
