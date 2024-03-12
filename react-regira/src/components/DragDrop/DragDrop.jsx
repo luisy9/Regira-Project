@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
+import DeleteButton from '../deleteButton/DeleteButton';
 
 const ItemType = 'ITEM';
 const url = 'http://localhost:3000/api/';
@@ -28,10 +29,18 @@ const Item = ({ id, item, caixa, setTask, task, items, setItems }) => {
         }),
     });
 
-    // const deleteTask = (id) => {
-    //     const deleteTask = task.filter(e => e.id !== id);
-    //     setTask(deleteTask);
-    // }
+    const deleteItem = (id) => {
+        const deleteTask = items.filter(item => item.id !== id);
+        setTask(deleteTask);
+        //Fetch para hacer delete de la tarea
+        const opcions = {
+            method: 'DELETE',
+            credentials: 'include'
+        };
+
+        fetch(url+'/tarea/'+id, opcions).then(res => res.json)
+            .then(data => console.log(data)).catch(error => console.log(error));
+    }
 
     const colorTask = () => {
         if (item.prioridad === 'High') return 'bg-red-400';
@@ -49,13 +58,19 @@ const Item = ({ id, item, caixa, setTask, task, items, setItems }) => {
                 <h1 className='text-bold text-3xl'>{item.tipo}</h1>
                 <p className='text-xl'>{item.titulo}</p>
                 <p className='text-sm'>{item.descripcion}</p>
-                <div className='flex items-center gap-3'>
-                    <div className={`my-2 border w-fit px-1 rounded-md ${colorTask()}`}>
-                        <p>{item.prioridad}</p>
+                <div className='flex'>
+                    <div className='flex items-center gap-3'>
+                        <div className={`my-2 border w-fit px-1 rounded-md ${colorTask()}`}>
+                            <p>{item.prioridad}</p>
+                        </div>
+                        <p className='border border-[#2681FF] px-2 rounded-md'>{emailUser}</p>
                     </div>
-                    <p className='border border-[#2681FF] px-2 rounded-md'>{emailUser}</p>
+                    <div className='flex items-center w-full justify-end'>
+                        <div>
+                            {caixa === 'not doing' ? <DeleteButton deleteItem={deleteItem} id={item.id} /> : null}
+                        </div>
+                    </div>
                 </div>
-
             </div>
         </>
     );
