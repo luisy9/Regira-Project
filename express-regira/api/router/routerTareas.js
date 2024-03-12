@@ -115,16 +115,6 @@ router.post('/tarea/proyecto/:id', checkToken, async (req, res, next) => {
     }
 
     const tarea = await Tarea.create(req.body)
-    // const tarea = await Tarea.create({
-    //   tipo: req.body.tipo,
-    //   titulo: req.body.titulo,
-    //   descripcion: req.body.descripcion,
-    //   prioridad: req.body.prioridad,
-    //   estado: req.body.estado,
-    //   usuarios_id: req.body.usuarios_id,
-    //   author_id: author_id,
-    //   proyecto_id: proyectoId
-    // });
     res.status(201).json(tarea);
   } catch (error) {
     res.status(404).json({ error: error.message });

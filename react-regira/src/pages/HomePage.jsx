@@ -1,6 +1,7 @@
 import { useEffect, useContext, useState } from "react"
 import { contextRegira } from '../context'
 import { NavLink } from 'react-router-dom';
+import TargetProject from "../components/TargetProject/TargetProject";
 
 export const HomePage = () => {
 
@@ -29,23 +30,13 @@ export const HomePage = () => {
   }
 
   return (
-    <div className="">
-      <h1 className="text-3xl text-center">Pagina Home</h1>
-      <div className="flex gap-5">
+    <div className="w-full pt-10">
+      <h1 className="text-3xl pb-3 font-semibold">Tu Trabajo</h1>
+      <hr className="max-w-full max-auto" />
+      <h1 className="pt-4 font-medium">Proyectos recientes</h1>
+      <div className="flex gap-5 py-3">
         {
-          proyectos.length > 0 ? proyectos.map(proyecto => {
-            return (
-              <>
-                <NavLink to={'/proyecto/' + proyecto.id}>
-                  <div className="py-2 px-4 border rounded-md w-62 h-40 cursor-pointer" key={proyecto.id}>
-                    <h1 className="text-bold">{proyecto.nombre}</h1>
-                    <p>{proyecto.descripcion}</p>
-                    <p>Todos los tiquets abiertos 0</p>
-                  </div>
-                </NavLink>
-              </>
-            )
-          }) : <></>
+          proyectos.length > 0 ? proyectos.map(proyecto => <TargetProject proyectoId={proyecto.id} proyecto={proyecto} key={proyecto.id} />) : <></>
         }
       </div>
     </div>
