@@ -98,32 +98,18 @@ router.get('/tarea/proyecto/:id', async (req, res, next) => {
   res.status(201).json(TareasProyecto);
 });
 
-//Endpoint para crear una nueva tarea
-// router.post('/tarea', checkToken ,async (req, res, next) => {
-//   try {
-//     const { usuarios_id } = req.body;
-//     const user = await Usuario.findByPk(usuarios_id); // Cerca l'usuari pel seu ID
-//     if (!user) {
-//       return res.status(500).json({ error: 'User no trobat' }); // Retorna error 500 si no es troba l'usuari
-//     }
 
-//     req.body.usuarios_id = usuarios_id; // Estableix l'ID de l'usuari en el cos de la petició
-
-//     const tarea = await Tarea.create(req.body);
-
-//     res.status(201).json(tarea);
-//   } catch (error) {
-//     res.status(404).json({ error: error.message });
-//   }
-// });
-
+//Crear una nueva tarea dentro de el proyecto, en el drag and drope
 router.post('/tarea/proyecto/:id', checkToken, async (req, res, next) => {
+
   try {
     const { author_id } = req.body;
-    const { id } = req.params.id;
+    const id = req.params.id;
+    console.log(id)
 
     const userId = await Usuario.findByPk(author_id);
     const proyectoId = await Proyecto.findByPk(id);
+    console.log(userId, proyectoId)
 
     if(!userId || !proyectoId){
       return res.status(404).json({message: 'No existe el proyecto o el usuario'});

@@ -74,7 +74,7 @@ const Box = ({ children, title, mouItem }) => {
 };
 
 export const DragDrop = ({ allProjectTasks, id }) => {
-    const [items, setItems] = useState(allProjectTasks);
+    const [items, setItems] = useState([...allProjectTasks]);
     const [task, setTask] = useState([]);
     const [valueInput, setValueInput] = useState('');
 
@@ -86,7 +86,6 @@ export const DragDrop = ({ allProjectTasks, id }) => {
             }
             return it;
         });
-        // setItems(nousItems)
         setTask(nousItems);
     }
 
@@ -94,6 +93,10 @@ export const DragDrop = ({ allProjectTasks, id }) => {
         const storedTasks = localStorage.getItem('tasks');
         setTask(JSON.parse(storedTasks));
     }, []);
+
+    useEffect(() => {
+        setItems([...allProjectTasks]);
+    }, [allProjectTasks])
 
     //Reset Input
     useEffect(() => {
@@ -137,16 +140,12 @@ export const DragDrop = ({ allProjectTasks, id }) => {
 
     return (
         <DndProvider backend={HTML5Backend}>
-            
-            {/* <AddItem id={caixa} addTask={addTask}
-                                            onChangeTextArea={onChangeTextArea}
-                                            setValueInput={setValueInput} valueInput={valueInput} /> */}
             <div className="w-full flex gap-5">
                 {
                     CAIXES.map(caixa => (
                         <div className='w-full' key={caixa}>
                             <Box key={caixa} title={caixa} mouItem={mouItem}>
-                                {items ? items.filter(item => item.estado === caixa).map(item => (
+                                {items.length > 0 ? items.filter(item => item.estado === caixa).map(item => (
                                     <>
                                         <Item key={item.id} id={item.id} item={item}
                                             caixa={caixa} setTask={setTask} task={task}

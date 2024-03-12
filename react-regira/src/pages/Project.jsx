@@ -13,6 +13,7 @@ export const Project = () => {
   const [allUsers, setAllUsers] = useState([]);
 
   const [allProjectTasks, setAllProjectTasks] = useState([]);
+  const [updatedAllProjectTasks, setUpdatedAllProjectTasks] = useState([]);
   const [popUp, setPopUp] = useState(false);
   // const [popUpProjectTask, setPopUpProjectTask] = useState(false);
   const [typeTask, setTypeTask] = useState('feature');
@@ -60,9 +61,12 @@ export const Project = () => {
       body: JSON.stringify(data)
     }
 
-    fetch(url + '/tarea', opcions)
+    fetch(url + '/tarea/proyecto/' + id, opcions)
       .then(res => res.json())
-      .then(data => setPopUp(false))
+      .then(data => {
+        setAllProjectTasks([...allProjectTasks, data]);
+        setPopUp(false)
+      })
       .catch(error => console.log(error));
   }
 
