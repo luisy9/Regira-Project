@@ -17,7 +17,9 @@ const Item = ({ id, item, caixa, setTask, task, items, setItems }) => {
             credentials: 'include'
         }
 
-        fetch(url + 'users/' + item.usuarios_id, opcions)
+        console.log(item)
+        fetch(url + 'users/' + item.usuarios_id
+        , opcions)
             .then(res => res.json()).then(email => setEmailUser(email.email)).catch(error => console.log(error));
     }, [item])
 
@@ -103,6 +105,7 @@ const Box = ({ children, title, mouItem }) => {
 };
 
 export const DragDrop = ({ allProjectTasks, id }) => {
+    console.log(allProjectTasks)
     const [items, setItems] = useState([...allProjectTasks]);
     const [task, setTask] = useState([]);
     const [valueInput, setValueInput] = useState('');

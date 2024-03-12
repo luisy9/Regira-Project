@@ -40,7 +40,7 @@ export const Project = () => {
       fetch(url + '/users', opcions).then(res => res.json()).then(data => {
         if (data.length > 0) {
           setAllUsers(data)
-          setUsuarioAsignado(data[0].id)
+          setUsuarioAsignado([data[0].id])
         }
       }).then(fetch(url + '/tarea/proyecto/' + id, opcions)
         .then(res => res.json())
