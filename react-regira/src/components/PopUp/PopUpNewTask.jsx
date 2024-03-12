@@ -2,7 +2,7 @@ export const PopUpNewTask = (
     { newTareaInProject, setPopUp, setTypeTask, typeTask,
         setPriorityTask, priorityTask, setStateTask, stateTask,
         setTitulo, titulo,
-        setUsuarioAsignado, usuarioAsignado, allUsers
+        setUsuarioAsignado, usuarioAsignado, allUsers, setDescripcion, descripcion
     }) => {
     return (
         <div className="z-50 flex justify-center items-center absolute top-0 left-0 w-full h-full backdrop-blur-sm">
@@ -56,7 +56,10 @@ export const PopUpNewTask = (
                         </select>
                     </div>
                     <div className="">
-                        <textarea className="border w-full h-20 rounded-md border-[#0054CD] placeholder:px-2 placeholder:py-1 ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-1 focus:ring-inset focus:ring-[#0052CC]" placeholder="Añade la descripcion">
+                        <textarea onChange={() => setDescripcion(event.target.value)} value={descripcion}
+                            className="border w-full h-20 rounded-md border-[#0054CD] placeholder:px-2 
+                        placeholder:py-1 ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-1 focus:ring-inset focus:ring-[#0052CC]"
+                            placeholder="Añade la descripcion">
                         </textarea>
                     </div>
                     <div className="w-full pt-3">

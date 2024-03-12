@@ -21,6 +21,7 @@ export const Project = () => {
   const [stateTask, setStateTask] = useState('doing');
   const [titulo, setTitulo] = useState('');
   const [usuarioAsignado, setUsuarioAsignado] = useState([]);
+  const [descripcion, setDescripcion] = useState('');
 
 
   useEffect(() => {
@@ -51,7 +52,17 @@ export const Project = () => {
   const newTareaInProject = () => {
     event.preventDefault();
 
-    const data = { tipo: typeTask, titulo: titulo, prioridad: priorityTask, estado: stateTask, usuarios_id: usuarioAsignado, author_id: parseInt(logued), proyectos_id: parseInt(id) };
+    const data = {
+      tipo: typeTask, 
+      titulo: titulo,
+      descripcion: descripcion, 
+      prioridad: priorityTask,
+      estado: stateTask, 
+      usuarios_id: usuarioAsignado[0],
+      author_id: parseInt(logued),
+      proyectos_id: parseInt(id)
+    };
+
     const opcions = {
       method: 'POST',
       credentials: 'include',
@@ -61,7 +72,7 @@ export const Project = () => {
       body: JSON.stringify(data)
     }
 
-    fetch(url + '/tarea/proyecto/' + id, opcions)
+    fetch(url + '/tarea/proyecto/'+id, opcions)
       .then(res => res.json())
       .then(data => {
         setAllProjectTasks([...allProjectTasks, data]);
@@ -93,12 +104,14 @@ export const Project = () => {
               setUsuarioAsignado={setUsuarioAsignado}
               usuarioAsignado={usuarioAsignado}
               allUsers={allUsers}
+              setDescripcion={setDescripcion}
+              descripcion={descripcion}
             />
           ) : null
         }
         {
           allProjectTasks.length > 0 ? (
-            <div className="flex justify-start h-full">
+            <div className="flex justify-start h-4/5">
               <DragDrop id={id} allProjectTasks={allProjectTasks} />
             </div>
           )

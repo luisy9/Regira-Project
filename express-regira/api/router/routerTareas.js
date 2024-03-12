@@ -98,26 +98,34 @@ router.get('/tarea/proyecto/:id', async (req, res, next) => {
   res.status(201).json(TareasProyecto);
 });
 
-
 //Crear una nueva tarea dentro de el proyecto, en el drag and drope
 router.post('/tarea/proyecto/:id', checkToken, async (req, res, next) => {
-
+  console.log(req.body)
   try {
     const { author_id } = req.body;
     const id = req.params.id;
-    console.log(id)
 
     const userId = await Usuario.findByPk(author_id);
     const proyectoId = await Proyecto.findByPk(id);
-    console.log(userId, proyectoId)
 
-    if(!userId || !proyectoId){
-      return res.status(404).json({message: 'No existe el proyecto o el usuario'});
+    if (!userId || !proyectoId) {
+      return res
+        .status(404)
+        .json({ message: 'No existe el proyecto o el usuario' });
     }
 
-    const tarea = await Tarea.create(req.body);
+    const tarea = await Tarea.create(req.body)
+    // const tarea = await Tarea.create({
+    //   tipo: req.body.tipo,
+    //   titulo: req.body.titulo,
+    //   descripcion: req.body.descripcion,
+    //   prioridad: req.body.prioridad,
+    //   estado: req.body.estado,
+    //   usuarios_id: req.body.usuarios_id,
+    //   author_id: author_id,
+    //   proyecto_id: proyectoId
+    // });
     res.status(201).json(tarea);
-    
   } catch (error) {
     res.status(404).json({ error: error.message });
   }
@@ -140,6 +148,7 @@ router.put('/tarea', checkToken, async (req, res, next) => {
           author_id,
           descripcion,
         } = credencial;
+
         const user = await Usuario.findByPk(usuarios_id); // Cerca l'usuari pel seu ID
         const proyecto = await Proyecto.findByPk(proyectos_id);
         const idTarea = await Tarea.findByPk(id);
@@ -154,7 +163,7 @@ router.put('/tarea', checkToken, async (req, res, next) => {
         const tarea = await idTarea.update({
           tipo: tipo,
           titulo: titulo,
-          descripcion: null,
+          descripcion: descripcion,
           prioridad: prioridad,
           estado: estado,
           proyectos_id: proyectos_id,

@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react';
 import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import { Items } from './Items'
-import AddItem from './AddItem';
 
 const ItemType = 'ITEM';
 const url = 'http://localhost:3000/api/';
@@ -10,6 +8,17 @@ const CAIXES = ['doing', 'finished', 'paused', 'not doing']
 
 
 const Item = ({ id, item, caixa, setTask, task, items, setItems }) => {
+
+    const [emailUser, setEmailUser] = useState('');
+    useEffect(() => {
+        const opcions = {
+            method: 'GET',
+            credentials: 'include'
+        }
+
+        fetch(url + 'users/' + item.usuarios_id, opcions)
+            .then(res => res.json()).then(email => setEmailUser(email.email)).catch(error => console.log(error));
+    }, [item])
 
     const [{ isDragging }, drag] = useDrag({
         type: ItemType,
@@ -37,11 +46,16 @@ const Item = ({ id, item, caixa, setTask, task, items, setItems }) => {
                 className={`border shadow-lg px-3 py-1 mb-4 w-full h-40 active:border-2 active:border-[#2681FF] text-black rounded-md cursor-grab`}
                 style={{ opacity: isDragging ? 0.5 : 1 }}
             >
-                <h1 className='text-bold text-2xl'>{item.tipo}</h1>
-                <p className='text-sm'>{item.titulo}</p>
-                <div className={`my-2 border w-fit px-1 rounded-md ${colorTask()}`}>
-                    <p>{item.prioridad}</p>
+                <h1 className='text-bold text-3xl'>{item.tipo}</h1>
+                <p className='text-xl'>{item.titulo}</p>
+                <p className='text-sm'>{item.descripcion}</p>
+                <div className='flex items-center gap-3'>
+                    <div className={`my-2 border w-fit px-1 rounded-md ${colorTask()}`}>
+                        <p>{item.prioridad}</p>
+                    </div>
+                    <p className='border border-[#2681FF] px-2 rounded-md'>{emailUser}</p>
                 </div>
+
             </div>
         </>
     );
@@ -122,21 +136,8 @@ export const DragDrop = ({ allProjectTasks, id }) => {
     }
 
     const addTask = () => {
-        setTask({...task ,descripcion: valueInput});
+        setTask({ ...task, descripcion: valueInput });
     }
-
-    // const addTodo = (valueInput, valueSelect) => {
-    //     //seteamos el objeto de tasks en el useStore de tasks
-    //     setTask([...task, {
-    //         ['id']: getIdRandom(), ['nom']:
-    //             valueInput, ['caixa']: valueSelect
-    //     }]);
-    // }
-
-    // const getIdRandom = () => {
-    //     return Math.random() * 1000;
-    // }
-
 
     return (
         <DndProvider backend={HTML5Backend}>

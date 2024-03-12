@@ -90,6 +90,12 @@ const Tarea = sequelize.define(
       unique: false,
     },
 
+    descripcion: {
+      type: Sequelize.STRING,
+      allowNull: false,
+      unique: false,
+    },
+
     prioridad: {
       type: Sequelize.ENUM('High', 'Medium', 'Low'),
       allowNull: false,
