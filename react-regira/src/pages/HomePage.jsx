@@ -2,6 +2,7 @@ import { useEffect, useContext, useState } from "react"
 import { contextRegira } from '../context'
 import { NavLink } from 'react-router-dom';
 import TargetProject from "../components/TargetProject/TargetProject";
+import AddItemBox from "../components/AddItemsBox/AddItemBox";
 
 export const HomePage = () => {
 
@@ -31,6 +32,7 @@ export const HomePage = () => {
 
   return (
     <div className="w-full pt-10">
+      <AddItemBox />
       <h1 className="text-3xl pb-3 font-semibold">Tu Trabajo</h1>
       <hr className="max-w-full max-auto" />
       <h1 className="pt-4 font-medium">Proyectos recientes</h1>
