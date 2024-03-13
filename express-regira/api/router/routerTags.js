@@ -67,16 +67,18 @@ router.post('/tag', checkToken ,async (req, res, next) => {
 });
 
 //Endpoint para añadir una tarea con un tag en la tabla intermedia
-router.post('/tag/:tagId/tarea/:tareaId', async (req, res, next) => {
+router.post('/tag/tarea/:tareaId', async (req, res, next) => {
   try {
-    const { tagId, tareaId } = req.params;
-    if (!tagId || !tareaId) {
+    const { tareaId } = req.params;
+    const { tagsId } = req.body;
+
+    if (!tagsId || !tareaId) {
       return res
         .status(404)
         .json({ error: 'tienes que poner el pkTag y la pkTarea' });
     }
 
-    const tag = await Tag.findByPk(tagId);
+    // const tag = await Tag.findByPk();
     const tarea = await Tarea.findByPk(tareaId);
 
     if (!tag || !tarea) {

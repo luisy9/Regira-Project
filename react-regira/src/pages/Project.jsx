@@ -1,7 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { contextRegira } from '../context';
-// import { ShowTasksProject } from "../components";
 import { DragDrop } from '../components';
 import PopUpNewTask from "../components/PopUp/PopUpNewTask";
 
@@ -11,18 +10,12 @@ export const Project = () => {
   const { id } = useParams();
   const { logued, setLogued } = useContext(contextRegira);
   const [allUsers, setAllUsers] = useState([]);
-
   const [allProjectTasks, setAllProjectTasks] = useState([]);
-  const [updatedAllProjectTasks, setUpdatedAllProjectTasks] = useState([]);
-  const [popUp, setPopUp] = useState(false);
-  // const [popUpProjectTask, setPopUpProjectTask] = useState(false);
-  const [typeTask, setTypeTask] = useState('feature');
-  const [priorityTask, setPriorityTask] = useState('High');
-  const [stateTask, setStateTask] = useState('doing');
-  const [titulo, setTitulo] = useState('');
   const [usuarioAsignado, setUsuarioAsignado] = useState([]);
-  const [descripcion, setDescripcion] = useState('');
+  const [tag, setTag] = useState([]);
+  const [addTag, setAddTag] = useState([]);
 
+  const [popUp, setPopUp] = useState(false);
 
   useEffect(() => {
     if (!logued) {
@@ -30,7 +23,6 @@ export const Project = () => {
         <h1 className="text-red-500">No estas autorizado!</h1>
       )
     } else {
-      console.log(logued)
       const opcions = {
         method: 'GET',
         credentials: 'include'
@@ -49,19 +41,17 @@ export const Project = () => {
     }
   }, []);
 
+  const [formState, setFormState] = useState({
+    tipo: 'feature',
+    titulo: '',
+    descripcion: '',
+    prioridad: 'High',
+    estado: 'doing',
+  });
+
+
   const newTareaInProject = () => {
     event.preventDefault();
-
-    const data = {
-      tipo: typeTask, 
-      titulo: titulo,
-      descripcion: descripcion, 
-      prioridad: priorityTask,
-      estado: stateTask, 
-      usuarios_id: usuarioAsignado[0],
-      author_id: parseInt(logued),
-      proyectos_id: parseInt(id)
-    };
 
     const opcions = {
       method: 'POST',
@@ -69,19 +59,52 @@ export const Project = () => {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(data)
+      body: JSON.stringify({ ...formState, usuarios_id: parseInt(usuarioAsignado[0]), proyectos_id: parseInt(id), author_id: parseInt(logued) })
     }
 
-    fetch(url + '/tarea/proyecto/'+id, opcions)
+    addTag.filter(e => Object.values(e)[0] !== false);
+    fetch(url + '/tarea/proyecto/' + id, opcions)
       .then(res => res.json())
       .then(data => {
         setAllProjectTasks([...allProjectTasks, data]);
-        setPopUp(false)
+        setPopUp(false);
+        fetch(url + '/tag/tarea/' + data.id, { ...opcions, body: JSON.stringify(addTag) })
+          .then(res => res.json())
+          .then(data => console.log(data)).catch(error => console.log(error))
       })
       .catch(error => console.log(error));
   }
 
-  const openModal = () => setPopUp(true);
+  const openModal = () => {
+
+    setPopUp(true);
+    setAddTag([]);
+    //Consulta para ver todos los tags disponibles
+    const opcions = {
+      method: 'GET',
+      credentials: 'include'
+    };
+
+    fetch(url + '/tag', opcions)
+      .then(res => res.json())
+      .then(data => setTag(data))
+      .catch(error => console.log(error));
+  }
+
+  const onChangeCheckTag = (tag) => {
+    // console.log(tag)
+    setAddTag(addTag => {
+      //Me estoy complicando pero esta bien que hagas logica, luego lo intentas hacer mas sencillo
+      if (addTag.length === 0) {
+        return [tag];
+      } else {
+        const tagsFiltrados = addTag.filter(tags => Object.keys(tags)[0] != Object.keys(tag)[0]);
+        if (Object.keys(tag)[0]) {
+          return [...tagsFiltrados, tag]
+        }
+      }
+    })
+  }
 
   return (
     <>
@@ -93,19 +116,16 @@ export const Project = () => {
           popUp ? (
             <PopUpNewTask newTareaInProject={newTareaInProject}
               setPopUp={setPopUp}
-              setTypeTask={setTypeTask}
-              typeTask={typeTask}
-              setPriorityTask={setPriorityTask}
-              priorityTask={priorityTask}
-              setStateTask={setStateTask}
-              stateTask={stateTask}
-              setTitulo={setTitulo}
-              titulo={titulo}
-              setUsuarioAsignado={setUsuarioAsignado}
-              usuarioAsignado={usuarioAsignado}
               allUsers={allUsers}
-              setDescripcion={setDescripcion}
-              descripcion={descripcion}
+              setFormState={setFormState}
+              formState={formState}
+              usuarioAsignado={usuarioAsignado}
+              setUsuarioAsignado={setUsuarioAsignado}
+              tag={tag}
+              setTag={setTag}
+              addTag={addTag}
+              setAddTag={setAddTag}
+              onChangeCheckTag={onChangeCheckTag}
             />
           ) : null
         }

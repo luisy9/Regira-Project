@@ -32,7 +32,7 @@ export const HomePage = () => {
 
   return (
     <div className="w-full pt-10">
-      <AddItemBox />
+        <AddItemBox />
       <h1 className="text-3xl pb-3 font-semibold">Tu Trabajo</h1>
       <hr className="max-w-full max-auto" />
       <h1 className="pt-4 font-medium">Proyectos recientes</h1>

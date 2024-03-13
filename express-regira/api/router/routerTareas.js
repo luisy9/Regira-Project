@@ -6,7 +6,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 const SECRET_KEY = 'en-pinxo-li-va-dir-a-en-panxo'; // Clau secreta per a la generació de JWT
-const { Proyecto, Usuario, Tarea } = require('../model'); // Importa els models de dades
+const { Proyecto, Usuario, Tarea, Tag } = require('../model'); // Importa els models de dades
 const { readItems, readItem, deleteItem, updateItem } = require('../generics');
 
 //AUTHENTICATION
@@ -100,13 +100,12 @@ router.get('/tarea/proyecto/:id', async (req, res, next) => {
 
 //Crear una nueva tarea dentro de el proyecto, en el drag and drope
 router.post('/tarea/proyecto/:id', checkToken, async (req, res, next) => {
-  console.log(req.body)
   try {
-    const { author_id } = req.body;
-    const id = req.params.id;
+    const { id, author_id } = req.body;
 
+    // const tag = await Tag.findOne({ where: {}});
     const userId = await Usuario.findByPk(author_id);
-    const proyectoId = await Proyecto.findByPk(id);
+    const proyectoId = await Proyecto.findByPk(req.params.id);
 
     if (!userId || !proyectoId) {
       return res
@@ -114,7 +113,9 @@ router.post('/tarea/proyecto/:id', checkToken, async (req, res, next) => {
         .json({ message: 'No existe el proyecto o el usuario' });
     }
 
-    const tarea = await Tarea.create(req.body)
+    const tarea = await Tarea.create(req.body);
+    // const tarea_tag = { id };
+    // const addTarea_Tag = await Tarea.addTag(req.id);
     res.status(201).json(tarea);
   } catch (error) {
     res.status(404).json({ error: error.message });
