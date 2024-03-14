@@ -171,4 +171,33 @@ router.put('/tarea', checkToken, async (req, res, next) => {
     res.status(404).json({ error: error.message });
   }
 });
+
+router.get('/tarea/:id/tags', checkToken, async (req, res, next) => {
+  try {
+    const id = req.params.id;
+
+    if (!id) {
+      return res.status(500).json({ error: 'El enpoint no ha recibido un id' }); // Retorna error 500 si no ha recibido un id
+    }
+
+    const tarea = await Tarea.findByPk(id);
+
+    const tareaConTags = await Tarea.findByPk(id, {
+      include: Tag,
+    });
+
+    const tagsDeTareas = tareaConTags.tags[0].dataValues.nombre;
+
+    if (!tarea) {
+      return res
+        .status(500)
+        .json({ error: 'No se ha encontrado una tarea con ese id' });
+    }
+
+    res.status(200).json(tagsDeTareas);
+  } catch (error) {
+    console.log({ error: error.message });
+  }
+});
+
 module.exports = router;

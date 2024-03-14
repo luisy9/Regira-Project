@@ -11,6 +11,8 @@ const CAIXES = ['doing', 'finished', 'paused', 'not doing']
 const Item = ({ id, item, caixa, setTask, task, items, setItems }) => {
 
     const [emailUser, setEmailUser] = useState('');
+    const [tag, setTag] = useState([]);
+    console.log(item)
     useEffect(() => {
         const opcions = {
             method: 'GET',
@@ -19,9 +21,24 @@ const Item = ({ id, item, caixa, setTask, task, items, setItems }) => {
 
         fetch(url + 'users/' + item.usuarios_id
             , opcions)
-            .then(res => res.json()).then(email => setEmailUser(email.email)).catch(error => console.log(error));
+            .then(res => res.json()).then(email => setEmailUser(email.email))
+            .then(fetch(url + 'tarea/' + item.id + '/tags', opcions)
+                .then(res => res.json())
+                .then(data => {
+                    setTag(tag => {
+                        if (tag.length === 0) {
+                            return [{ id: item.id, tag: data }]
+                        } else {
+                            const noRepeatTags = tag.find(t => t.id === item.id)
+                            return [noRepeatTags];
+                        }
+                    });
+                })
+                .catch(errorData => console.log(errorData)))
+            .catch(error => console.log(error))
     }, [item])
 
+    //Drag
     const [{ isDragging }, drag] = useDrag({
         type: ItemType,
         item: { type: ItemType, id },
@@ -30,19 +47,23 @@ const Item = ({ id, item, caixa, setTask, task, items, setItems }) => {
         }),
     });
 
+    //Borramos el item de el state y de la base de datos
     const deleteItem = (id) => {
         const deleteTask = items.filter(item => item.id !== id);
+        console.log(deleteItem);
         setTask(deleteTask);
+
         //Fetch para hacer delete de la tarea
         const opcions = {
             method: 'DELETE',
             credentials: 'include'
         };
-
+        //Fetch a delete item
         fetch(url + '/tarea/' + id, opcions).then(res => res.json)
             .then(data => console.log(data)).catch(error => console.log(error));
     }
 
+    //Añadir color a las tareas
     const colorTask = () => {
         if (item.prioridad === 'High') return 'bg-red-400';
         if (item.prioridad === 'Medium') return 'bg-yellow-400';
@@ -72,6 +93,7 @@ const Item = ({ id, item, caixa, setTask, task, items, setItems }) => {
                         </div>
                     </div>
                 </div>
+                <div className='border rounded-md'><p>{tag.map(e => <p>{e.tag}</p>)}</p></div>
             </div>
         </>
     );

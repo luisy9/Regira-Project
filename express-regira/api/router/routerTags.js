@@ -140,7 +140,7 @@ router.get('/tag/:id/tareas', async (req, res, next) => {
 
     const tasks = await tagId.getTasks();
 
-    res.json(tasks);
+    res.status(200).json(tasks);
   } catch (error) {
     res.status(404).json({ error: error.message });
   }
