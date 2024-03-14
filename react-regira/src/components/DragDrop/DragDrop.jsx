@@ -18,7 +18,7 @@ const Item = ({ id, item, caixa, setTask, task, items, setItems }) => {
         }
 
         fetch(url + 'users/' + item.usuarios_id
-        , opcions)
+            , opcions)
             .then(res => res.json()).then(email => setEmailUser(email.email)).catch(error => console.log(error));
     }, [item])
 
@@ -39,7 +39,7 @@ const Item = ({ id, item, caixa, setTask, task, items, setItems }) => {
             credentials: 'include'
         };
 
-        fetch(url+'/tarea/'+id, opcions).then(res => res.json)
+        fetch(url + '/tarea/' + id, opcions).then(res => res.json)
             .then(data => console.log(data)).catch(error => console.log(error));
     }
 
@@ -94,11 +94,13 @@ const Box = ({ children, title, mouItem }) => {
     });
 
     return (
-        <div ref={drop} className={`bg-[#F7F8F9] p-8 min-h-[400px] border rounded-md h-full ${isOver ? 'border-[#2681FF]' : ''}${title === 'Delete' ? 'grid place-content-center' : ''} ${title === 'Delete' && isOver && 'bg-red-600 bg-opacity-15 border-red-600'}`}>
-            <h2 className={`text-2xl text-start mb-4 text-bold`}>{title === 'Delete' ?
-                <img src='/eliminar.png' alt='delete' className='w-12 h-12' />
-                : `${title}`}</h2>
-            {children}
+        <div dir='ltr' className={`h-full ${isOver ? 'border-x-4 duration-200 border-[#2681FF] rounded-md' : ''}`} ref={drop} >
+            <div className={`bg-[#F7F8F9] p-8 border rounded-md ${title === 'Delete' ? 'grid place-content-center' : ''} ${title === 'Delete' && isOver && 'bg-red-600 bg-opacity-15 border-red-600'}`}>
+                <h2 className={`text-2xl text-start mb-4 text-bold`}>{title === 'Delete' ?
+                    <img src='/eliminar.png' alt='delete' className='w-12 h-12' />
+                    : `${title}`}</h2>
+                {children}
+            </div>
         </div>
     );
 };

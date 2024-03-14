@@ -62,13 +62,13 @@ export const Project = () => {
       body: JSON.stringify({ ...formState, usuarios_id: parseInt(usuarioAsignado[0]), proyectos_id: parseInt(id), author_id: parseInt(logued) })
     }
 
-    addTag.filter(e => Object.values(e)[0] !== false);
+    const finalTags = addTag.filter(e => Object.values(e)[0] !== false);
     fetch(url + '/tarea/proyecto/' + id, opcions)
       .then(res => res.json())
       .then(data => {
         setAllProjectTasks([...allProjectTasks, data]);
         setPopUp(false);
-        fetch(url + '/tag/tarea/' + data.id, { ...opcions, body: JSON.stringify(addTag) })
+        fetch(url + '/tag/tarea/' + data.id, { ...opcions, body: JSON.stringify({finalTags: [...finalTags]}) })
           .then(res => res.json())
           .then(data => console.log(data)).catch(error => console.log(error))
       })
@@ -92,9 +92,7 @@ export const Project = () => {
   }
 
   const onChangeCheckTag = (tag) => {
-    // console.log(tag)
     setAddTag(addTag => {
-      //Me estoy complicando pero esta bien que hagas logica, luego lo intentas hacer mas sencillo
       if (addTag.length === 0) {
         return [tag];
       } else {

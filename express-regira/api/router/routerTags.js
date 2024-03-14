@@ -48,7 +48,7 @@ router.delete(
 ); //Hacer un delete de un tag en especifico
 
 //Endpoint para crear un tag
-router.post('/tag', checkToken ,async (req, res, next) => {
+router.post('/tag', checkToken, async (req, res, next) => {
   try {
     const { nombre } = req.body;
 
@@ -68,24 +68,42 @@ router.post('/tag', checkToken ,async (req, res, next) => {
 
 //Endpoint para añadir una tarea con un tag en la tabla intermedia
 router.post('/tag/tarea/:tareaId', async (req, res, next) => {
+  console.log(req.body);
   try {
     const { tareaId } = req.params;
-    const { tagsId } = req.body;
+    const { finalTags } = req.body;
 
-    if (!tagsId || !tareaId) {
+    if (!tareaId || !finalTags) {
       return res
         .status(404)
         .json({ error: 'tienes que poner el pkTag y la pkTarea' });
     }
 
-    // const tag = await Tag.findByPk();
+    finalTags.map((tag) => Object.keys(tag));
+
+    const tag = await Promise.all(
+      finalTags.map(async (tag) => {
+        if (await Tag.findByPk(Object.keys(tag)[0])) {
+          return Object.keys(tag)[0];
+        }
+      })
+    );
+
     const tarea = await Tarea.findByPk(tareaId);
 
     if (!tag || !tarea) {
-      return res.status(404).json({ error: 'No ha encontrado o un tag o una tarea con los ids que le has pasado' });
+      return res.status(404).json({
+        error:
+          'No ha encontrado o un tag o una tarea con los ids que le has pasado',
+      });
     }
 
-    await tarea.addTag(tag);
+    await Promise.all(
+      tag.map(async (t) => {
+        await tarea.addTag(t);
+      })
+    );
+
     res.status(201).json({ message: 'Se ha añadido!' });
   } catch (error) {
     res.status(500).json({ error: 'No funciona el endpoint' });
