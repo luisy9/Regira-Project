@@ -8,11 +8,12 @@ const url = 'http://localhost:3000/api/';
 const CAIXES = ['doing', 'finished', 'paused', 'not doing']
 
 
-const Item = ({ id, item, caixa, setTask, task, items, setItems }) => {
+const Item = ({ id, item, caixa, setTask, task, items, setItems, onDeleteTask }) => {
 
     const [emailUser, setEmailUser] = useState('');
     const [tag, setTag] = useState([]);
     useEffect(() => {
+
         const opcions = {
             method: 'GET',
             credentials: 'include'
@@ -23,7 +24,10 @@ const Item = ({ id, item, caixa, setTask, task, items, setItems }) => {
             .then(res => res.json()).then(email => setEmailUser(email.email))
             .then(fetch(url + 'tarea/' + item.id + '/tags', opcions)
                 .then(res => res.json())
-                .then(data => setTag([...tag, data]))
+                .then(data => {
+                    console.log(data)
+                    setTag([...tag, data])
+                })
                 .catch(errorData => console.log(errorData)))
             .catch(error => console.log(error))
     }, [item])
@@ -39,17 +43,18 @@ const Item = ({ id, item, caixa, setTask, task, items, setItems }) => {
 
     //Borramos el item de el state y de la base de datos
     const deleteItem = (id) => {
-        const deleteTask = items.filter(item => item.id !== id);
-        setTask(deleteTask);
-
+        const deleteTask = task.filter(item => item.id !== id);
         //Fetch para hacer delete de la tarea
         const opcions = {
             method: 'DELETE',
             credentials: 'include'
         };
+
         //Fetch a delete item
-        fetch(url + '/tarea/' + id, opcions).then(res => res.json)
-            .then(data => console.log(data)).catch(error => console.log(error));
+        fetch(url + 'tarea/' + id, opcions).then(res => res.json())
+            .then(data => onDeleteTask(data)).catch(error => console.log(error));
+
+        // setTask(deleteTask);
     }
 
     //Añadir color a las tareas
@@ -62,13 +67,12 @@ const Item = ({ id, item, caixa, setTask, task, items, setItems }) => {
     return (
         <>
             <div
-            key={item.estado}
+                key={item.estado}
                 ref={drag}
                 className={`border shadow-lg px-3 my-4 w-full h-44 active:border-2 active:border-[#2681FF] text-black rounded-md cursor-grab`}
                 style={{ opacity: isDragging ? 0.5 : 1 }}
             >
                 <h1 className='text-bold text-3xl'>{item.tipo}</h1>
-                <h1 className='text-4xl'>{item.estado}</h1>
                 <p className='text-xl'>{item.titulo}</p>
                 <p className='text-sm'>{item.descripcion}</p>
                 <div className='flex'>
@@ -124,7 +128,7 @@ const Box = ({ children, title, mouItem }) => {
     );
 };
 
-export const DragDrop = ({ allProjectTasks, id }) => {
+export const DragDrop = ({ allProjectTasks, id, onDeleteTask }) => {
     const [items, setItems] = useState([...allProjectTasks]);
     const [task, setTask] = useState([]);
     const [valueInput, setValueInput] = useState('');
@@ -140,10 +144,10 @@ export const DragDrop = ({ allProjectTasks, id }) => {
         setTask(nousItems);
     }
 
-    useEffect(() => {
-        const storedTasks = localStorage.getItem('tasks');
-        setTask(JSON.parse(storedTasks));
-    }, []);
+    // useEffect(() => {
+    //     const storedTasks = localStorage.getItem('tasks');
+    //     setTask(JSON.parse(storedTasks));
+    // }, []);
 
     useEffect(() => {
         setItems([...allProjectTasks]);
@@ -188,7 +192,7 @@ export const DragDrop = ({ allProjectTasks, id }) => {
                                     <>
                                         <Item key={item.id} id={item.id} item={item}
                                             caixa={caixa} setTask={setTask} task={task}
-                                            items={items} setItems={setItems} />
+                                            items={items} setItems={setItems} onDeleteTask={onDeleteTask} />
                                     </>
                                 )) : []}
                             </Box>

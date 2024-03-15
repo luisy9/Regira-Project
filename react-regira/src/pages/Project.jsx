@@ -59,7 +59,12 @@ export const Project = () => {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ ...formState, usuarios_id: parseInt(usuarioAsignado[0]), proyectos_id: parseInt(id), author_id: parseInt(logued) })
+      body:
+        JSON.stringify({
+          ...formState,
+          usuarios_id: parseInt(usuarioAsignado[0]),
+          proyectos_id: parseInt(id), author_id: parseInt(logued)
+        })
     }
 
     const finalTags = addTag.filter(e => Object.values(e)[0] !== false);
@@ -104,40 +109,52 @@ export const Project = () => {
     })
   }
 
-  return (
-    <>
-      <div className="w-full">
-        <div className="flex justify-end pb-5">
-          <button className="border rounded-md text-lg px-5 py-2 bg-[#0054CD] text-white" onClick={openModal}>Crear tarea</button>
-        </div>
-        {
-          popUp ? (
-            <PopUpNewTask newTareaInProject={newTareaInProject}
-              setPopUp={setPopUp}
-              allUsers={allUsers}
-              setFormState={setFormState}
-              formState={formState}
-              usuarioAsignado={usuarioAsignado}
-              setUsuarioAsignado={setUsuarioAsignado}
-              tag={tag}
-              setTag={setTag}
-              addTag={addTag}
-              setAddTag={setAddTag}
-              onChangeCheckTag={onChangeCheckTag}
-            />
-          ) : null
-        }
-        {
-          (
-            <div className="flex justify-start h-4/5">
-              <DragDrop id={id} allProjectTasks={allProjectTasks} />
-            </div>
-          )
-        }
-      </div>
-    </>
+  const onDeleteTask = () => {
+    const opcions = {
+      method: 'GET',
+      credentials: 'include'
+    }
 
-  )
+    fetch(url + '/tarea/proyecto/' + id, opcions)
+      .then(res => res.json())
+      .then(tasks => setAllProjectTasks(tasks))
+        .catch (error => console.log(error))
+  }
+
+return (
+  <>
+    <div className="w-full">
+      <div className="flex justify-end pb-5">
+        <button className="border rounded-md text-lg px-5 py-2 bg-[#0054CD] text-white" onClick={openModal}>Crear tarea</button>
+      </div>
+      {
+        popUp ? (
+          <PopUpNewTask newTareaInProject={newTareaInProject}
+            setPopUp={setPopUp}
+            allUsers={allUsers}
+            setFormState={setFormState}
+            formState={formState}
+            usuarioAsignado={usuarioAsignado}
+            setUsuarioAsignado={setUsuarioAsignado}
+            tag={tag}
+            setTag={setTag}
+            addTag={addTag}
+            setAddTag={setAddTag}
+            onChangeCheckTag={onChangeCheckTag}
+          />
+        ) : null
+      }
+      {
+        (
+          <div className="flex justify-start h-4/5">
+            <DragDrop id={id} allProjectTasks={allProjectTasks} onDeleteTask={onDeleteTask} />
+          </div>
+        )
+      }
+    </div>
+  </>
+
+)
 }
 
 export default Project

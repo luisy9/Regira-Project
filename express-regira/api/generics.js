@@ -48,7 +48,7 @@ const deleteItem = async (req, res, Model) => {
       return res.status(404).json({ error: 'Item not found' });
     }
     await item.destroy();
-    res.json({ message: 'Project deleted successfully' });
+    res.json({ message: 'Tarea deleted successfully' });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
