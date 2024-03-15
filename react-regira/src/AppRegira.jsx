@@ -5,7 +5,7 @@ import { router } from './routes';
 
 export const AppRegira = () => {
 
-  const loadStorage = document.cookie ? localStorage.getItem('isLogued') : null
+  const loadStorage = document.cookie ? localStorage.getItem('isLogued') : null;
   const [logued, setLogued] = useState(loadStorage);
 
   return (

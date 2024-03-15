@@ -18,6 +18,7 @@ export const Project = () => {
   const [popUp, setPopUp] = useState(false);
 
   useEffect(() => {
+    console.log(logued)
     if (!logued) {
       return (
         <h1 className="text-red-500">No estas autorizado!</h1>

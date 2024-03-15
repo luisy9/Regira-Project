@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom'
 import { DropDown } from './'
-import { useContext, useEffect } from 'react';
+import { useContext } from 'react';
 import { contextRegira } from '../context';
 
 let url = 'http://localhost:3000/api';

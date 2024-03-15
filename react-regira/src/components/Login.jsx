@@ -31,7 +31,6 @@ export const Login = () => {
             .then(response => response.json())
             .then(data => {
                 if (data.id) {
-                    console.log(data)
                     setTimeout(() => navigate('/'), 0)
                     localStorage.setItem('isLogued', JSON.stringify(data.id))
                     setLogued(data.id)
