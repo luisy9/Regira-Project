@@ -18,7 +18,6 @@ export const Project = () => {
   const [popUp, setPopUp] = useState(false);
 
   useEffect(() => {
-    console.log(logued)
     if (!logued) {
       return (
         <h1 className="text-red-500">No estas autorizado!</h1>
@@ -69,7 +68,7 @@ export const Project = () => {
       .then(data => {
         setAllProjectTasks([...allProjectTasks, data]);
         setPopUp(false);
-        fetch(url + '/tag/tarea/' + data.id, { ...opcions, body: JSON.stringify({finalTags: [...finalTags]}) })
+        fetch(url + '/tag/tarea/' + data.id, { ...opcions, body: JSON.stringify({ finalTags: [...finalTags] }) })
           .then(res => res.json())
           .then(data => console.log(data)).catch(error => console.log(error))
       })
@@ -129,17 +128,11 @@ export const Project = () => {
           ) : null
         }
         {
-          allProjectTasks.length > 0 ? (
+          (
             <div className="flex justify-start h-4/5">
               <DragDrop id={id} allProjectTasks={allProjectTasks} />
             </div>
           )
-            : <div className="flex flex-col">
-              <h1>Tus tareas apareceran aqui</h1>
-              <div className="flex justify-center py-4">
-                <button className="border py-1 rounded-md px-5 text-white bg-[#0054CD] hover:cursor-pointer hover:bg-[#4d97ff]" onClick={() => setPopUp(true)}>Crear tarea</button>
-              </div>
-            </div>
         }
       </div>
     </>

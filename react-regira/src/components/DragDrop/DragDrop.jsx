@@ -12,7 +12,6 @@ const Item = ({ id, item, caixa, setTask, task, items, setItems }) => {
 
     const [emailUser, setEmailUser] = useState('');
     const [tag, setTag] = useState([]);
-    console.log(item)
     useEffect(() => {
         const opcions = {
             method: 'GET',
@@ -24,16 +23,7 @@ const Item = ({ id, item, caixa, setTask, task, items, setItems }) => {
             .then(res => res.json()).then(email => setEmailUser(email.email))
             .then(fetch(url + 'tarea/' + item.id + '/tags', opcions)
                 .then(res => res.json())
-                .then(data => {
-                    setTag(tag => {
-                        if (tag.length === 0) {
-                            return [{ id: item.id, tag: data }]
-                        } else {
-                            const noRepeatTags = tag.find(t => t.id === item.id)
-                            return [noRepeatTags];
-                        }
-                    });
-                })
+                .then(data => setTag([...tag, data]))
                 .catch(errorData => console.log(errorData)))
             .catch(error => console.log(error))
     }, [item])
@@ -50,7 +40,6 @@ const Item = ({ id, item, caixa, setTask, task, items, setItems }) => {
     //Borramos el item de el state y de la base de datos
     const deleteItem = (id) => {
         const deleteTask = items.filter(item => item.id !== id);
-        console.log(deleteItem);
         setTask(deleteTask);
 
         //Fetch para hacer delete de la tarea
@@ -74,7 +63,7 @@ const Item = ({ id, item, caixa, setTask, task, items, setItems }) => {
         <>
             <div
                 ref={drag}
-                className={`border shadow-lg px-3 py-1 mb-4 w-full h-40 active:border-2 active:border-[#2681FF] text-black rounded-md cursor-grab`}
+                className={`border shadow-lg px-3 my-4 w-full h-44 active:border-2 active:border-[#2681FF] text-black rounded-md cursor-grab`}
                 style={{ opacity: isDragging ? 0.5 : 1 }}
             >
                 <h1 className='text-bold text-3xl'>{item.tipo}</h1>
@@ -93,7 +82,14 @@ const Item = ({ id, item, caixa, setTask, task, items, setItems }) => {
                         </div>
                     </div>
                 </div>
-                <div className='border rounded-md'><p>{tag.map(e => <p>{e.tag}</p>)}</p></div>
+                {console.log([tag])}
+                {tag[0]?.map(e => {
+                    return (
+                        <>
+                            <p className='border-2'>{e.id === item.id ? e.tag : <></>}</p>
+                        </>
+                    )
+                })}
             </div>
         </>
     );
@@ -163,6 +159,7 @@ export const DragDrop = ({ allProjectTasks, id }) => {
                 },
                 body: JSON.stringify(task)
             };
+
             fetch(url + 'tarea', opcions)
                 .then(res => res.json())
                 .then(data => setItems(data))

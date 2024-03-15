@@ -22,7 +22,7 @@ export const PopUpNewTask = (
                         {
                             tag.map(t => {
                                 return (
-                                    <div className="" key={tag?.id}>
+                                    <div className="" key={t?.id}>
                                         <label>{t?.nombre}</label>
                                         <input type="checkbox" key={t?.id}
                                             onChange={() => onChangeCheckTag({ [t.id]: event.target.checked })} />

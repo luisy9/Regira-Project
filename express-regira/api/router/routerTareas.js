@@ -182,11 +182,16 @@ router.get('/tarea/:id/tags', checkToken, async (req, res, next) => {
 
     const tarea = await Tarea.findByPk(id);
 
-    const tareaConTags = await Tarea.findByPk(id, {
+    const tareaConTags = await Tarea.findByPk(tarea.id, {
       include: Tag,
     });
 
-    const tagsDeTareas = tareaConTags.tags[0].dataValues.nombre;
+    const tagsDeTareas = tareaConTags.dataValues.tags;
+    const allTagsTarea = tagsDeTareas
+      .filter((tag) => tag.tareas_has_tags.tareaId !== id)
+      .map((t) => {
+        return { id: t.tareas_has_tags.tareaId, tag: t.nombre };
+      });
 
     if (!tarea) {
       return res
@@ -194,7 +199,7 @@ router.get('/tarea/:id/tags', checkToken, async (req, res, next) => {
         .json({ error: 'No se ha encontrado una tarea con ese id' });
     }
 
-    res.status(200).json(tagsDeTareas);
+    res.status(200).json(allTagsTarea);
   } catch (error) {
     console.log({ error: error.message });
   }
