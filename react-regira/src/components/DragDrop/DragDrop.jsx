@@ -8,10 +8,11 @@ const url = 'http://localhost:3000/api/';
 const CAIXES = ['doing', 'finished', 'paused', 'not doing']
 
 
-const Item = ({ id, item, caixa, setTask, task, items, setItems, onDeleteTask }) => {
+const Item = ({ id, item, caixa, setTask, task, items, setItems, onDeleteTask, onUpdateTask }) => {
 
     const [emailUser, setEmailUser] = useState('');
     const [tag, setTag] = useState([]);
+
     useEffect(() => {
 
         const opcions = {
@@ -25,7 +26,6 @@ const Item = ({ id, item, caixa, setTask, task, items, setItems, onDeleteTask })
             .then(fetch(url + 'tarea/' + item.id + '/tags', opcions)
                 .then(res => res.json())
                 .then(data => {
-                    console.log(data)
                     setTag([...tag, data])
                 })
                 .catch(errorData => console.log(errorData)))
@@ -44,6 +44,7 @@ const Item = ({ id, item, caixa, setTask, task, items, setItems, onDeleteTask })
     //Borramos el item de el state y de la base de datos
     const deleteItem = (id) => {
         const deleteTask = task.filter(item => item.id !== id);
+
         //Fetch para hacer delete de la tarea
         const opcions = {
             method: 'DELETE',
@@ -53,8 +54,6 @@ const Item = ({ id, item, caixa, setTask, task, items, setItems, onDeleteTask })
         //Fetch a delete item
         fetch(url + 'tarea/' + id, opcions).then(res => res.json())
             .then(data => onDeleteTask(data)).catch(error => console.log(error));
-
-        // setTask(deleteTask);
     }
 
     //Añadir color a las tareas
@@ -72,7 +71,12 @@ const Item = ({ id, item, caixa, setTask, task, items, setItems, onDeleteTask })
                 className={`border shadow-lg px-3 my-4 w-full h-44 active:border-2 active:border-[#2681FF] text-black rounded-md cursor-grab`}
                 style={{ opacity: isDragging ? 0.5 : 1 }}
             >
-                <h1 className='text-bold text-3xl'>{item.tipo}</h1>
+                <div className='flex justify-between items-center'>
+                    <h1 className='text-bold text-3xl'>{item.tipo}</h1>
+                    <div className='' onClick={onUpdateTask}>
+                        <img src='/editar.png' alt='edit' className='w-7 h-7 cursor-pointer' />
+                    </div>
+                </div>
                 <p className='text-xl'>{item.titulo}</p>
                 <p className='text-sm'>{item.descripcion}</p>
                 <div className='flex'>
@@ -88,13 +92,15 @@ const Item = ({ id, item, caixa, setTask, task, items, setItems, onDeleteTask })
                         </div>
                     </div>
                 </div>
-                {tag[0]?.map(e => {
-                    return (
-                        <>
-                            <p className='border-2'>{e.id === item.id ? e.tag : <></>}</p>
-                        </>
-                    )
-                })}
+                <div className='flex gap-2'>
+                    {tag[0]?.map(e => {
+                        return (
+                            <>
+                                <p className='border-2 rounded-md px-1 text-bold'>#{e.id === item.id ? e.tag : <></>}</p>
+                            </>
+                        )
+                    })}
+                </div>
             </div>
         </>
     );
@@ -128,7 +134,7 @@ const Box = ({ children, title, mouItem }) => {
     );
 };
 
-export const DragDrop = ({ allProjectTasks, id, onDeleteTask }) => {
+export const DragDrop = ({ allProjectTasks, id, onDeleteTask, onUpdateTask }) => {
     const [items, setItems] = useState([...allProjectTasks]);
     const [task, setTask] = useState([]);
     const [valueInput, setValueInput] = useState('');
@@ -143,11 +149,6 @@ export const DragDrop = ({ allProjectTasks, id, onDeleteTask }) => {
         });
         setTask(nousItems);
     }
-
-    // useEffect(() => {
-    //     const storedTasks = localStorage.getItem('tasks');
-    //     setTask(JSON.parse(storedTasks));
-    // }, []);
 
     useEffect(() => {
         setItems([...allProjectTasks]);
@@ -192,7 +193,7 @@ export const DragDrop = ({ allProjectTasks, id, onDeleteTask }) => {
                                     <>
                                         <Item key={item.id} id={item.id} item={item}
                                             caixa={caixa} setTask={setTask} task={task}
-                                            items={items} setItems={setItems} onDeleteTask={onDeleteTask} />
+                                            items={items} setItems={setItems} onDeleteTask={onDeleteTask} onUpdateTask={onUpdateTask} />
                                     </>
                                 )) : []}
                             </Box>

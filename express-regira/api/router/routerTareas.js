@@ -172,6 +172,7 @@ router.put('/tarea', checkToken, async (req, res, next) => {
   }
 });
 
+//Endpoint para 
 router.get('/tarea/:id/tags', checkToken, async (req, res, next) => {
   try {
     const id = req.params.id;
@@ -182,11 +183,15 @@ router.get('/tarea/:id/tags', checkToken, async (req, res, next) => {
 
     const tarea = await Tarea.findByPk(id);
 
+    //Mirar los tags de la tabla intermedia
     const tareaConTags = await Tarea.findByPk(tarea.id, {
       include: Tag,
     });
 
+    //Coger los tags
     const tagsDeTareas = tareaConTags.dataValues.tags;
+    
+    //Hacer un filtrado para ver todos los tags de esa tarea
     const allTagsTarea = tagsDeTareas
       .filter((tag) => tag.tareas_has_tags.tareaId !== id)
       .map((t) => {

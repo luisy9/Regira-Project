@@ -1,5 +1,5 @@
 export const PopUpNewTask = (
-    { newTareaInProject, setPopUp, allUsers, formState, setFormState,
+    { newTareaInProject, popUp,setPopUp, allUsers, formState, setFormState,
         usuarioAsignado, setUsuarioAsignado, tag, setTag, addTag, setAddTag, onChangeCheckTag }) => {
 
     return (
@@ -7,7 +7,7 @@ export const PopUpNewTask = (
             <div className="flex flex-col justify-end border border-[#0054CD] bg-white w-3/6 rounded-md px-5 py-5">
                 <div className="flex justify-between">
                     <h1 className="text-4xl text-bold">Nueva Tarea</h1>
-                    <div className="flex justify-center items-center text-2xl hover:bg-slate-200 hover:rounded-md" onClick={() => setPopUp(false)}>
+                    <div className="flex justify-center items-center text-2xl hover:bg-slate-200 hover:rounded-md" onClick={() => setPopUp({...popUp, createTask: false})}>
                         <button className="cursor-pointer px-2 w-10 h-full rounded-full">X</button>
                     </div>
                 </div>

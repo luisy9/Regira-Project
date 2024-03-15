@@ -2,7 +2,8 @@ import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { contextRegira } from '../context';
 import { DragDrop } from '../components';
-import PopUpNewTask from "../components/PopUp/PopUpNewTask";
+import PopUpNewTask from "../components/PopUpAddTask/PopUpNewTask";
+import PopUpUpdateTask from "../components/PopUpUpdateTask/PopUpUpdateTask";
 
 export const Project = () => {
 
@@ -15,7 +16,11 @@ export const Project = () => {
   const [tag, setTag] = useState([]);
   const [addTag, setAddTag] = useState([]);
 
-  const [popUp, setPopUp] = useState(false);
+  //Set modal create tag open || Set modal update open
+  const [popUp, setPopUp] = useState({
+    createTask: false,
+    updateTask: false
+  });
 
   useEffect(() => {
     if (!logued) {
@@ -59,6 +64,7 @@ export const Project = () => {
       headers: {
         'Content-Type': 'application/json'
       },
+
       body:
         JSON.stringify({
           ...formState,
@@ -72,7 +78,7 @@ export const Project = () => {
       .then(res => res.json())
       .then(data => {
         setAllProjectTasks([...allProjectTasks, data]);
-        setPopUp(false);
+        setPopUp({ ...popUp, createTask: false });
         fetch(url + '/tag/tarea/' + data.id, { ...opcions, body: JSON.stringify({ finalTags: [...finalTags] }) })
           .then(res => res.json())
           .then(data => console.log(data)).catch(error => console.log(error))
@@ -81,9 +87,9 @@ export const Project = () => {
   }
 
   const openModal = () => {
-
-    setPopUp(true);
+    setPopUp({ ...popUp, createTask: true });
     setAddTag([]);
+
     //Consulta para ver todos los tags disponibles
     const opcions = {
       method: 'GET',
@@ -118,43 +124,52 @@ export const Project = () => {
     fetch(url + '/tarea/proyecto/' + id, opcions)
       .then(res => res.json())
       .then(tasks => setAllProjectTasks(tasks))
-        .catch (error => console.log(error))
+      .catch(error => console.log(error))
   }
 
-return (
-  <>
-    <div className="w-full">
-      <div className="flex justify-end pb-5">
-        <button className="border rounded-md text-lg px-5 py-2 bg-[#0054CD] text-white" onClick={openModal}>Crear tarea</button>
-      </div>
-      {
-        popUp ? (
-          <PopUpNewTask newTareaInProject={newTareaInProject}
-            setPopUp={setPopUp}
-            allUsers={allUsers}
-            setFormState={setFormState}
-            formState={formState}
-            usuarioAsignado={usuarioAsignado}
-            setUsuarioAsignado={setUsuarioAsignado}
-            tag={tag}
-            setTag={setTag}
-            addTag={addTag}
-            setAddTag={setAddTag}
-            onChangeCheckTag={onChangeCheckTag}
-          />
-        ) : null
-      }
-      {
-        (
-          <div className="flex justify-start h-4/5">
-            <DragDrop id={id} allProjectTasks={allProjectTasks} onDeleteTask={onDeleteTask} />
-          </div>
-        )
-      }
-    </div>
-  </>
+  const onUpdateTask = () => {
+    setPopUp({ ...popUp, updateTask: true });
+  }
 
-)
+  return (
+    <>
+      <div className="w-full">
+        <div className="flex justify-end pb-5">
+          <button className="border rounded-md text-lg px-5 py-2 bg-[#0054CD] text-white" onClick={openModal}>Crear tarea</button>
+        </div>
+        {
+          popUp.updateTask ?
+            <PopUpUpdateTask closeTag={setPopUp} popUp={popUp} /> : null
+        }
+        {
+          popUp.createTask ? (
+            <PopUpNewTask newTareaInProject={newTareaInProject}
+              popUp={popUp}
+              setPopUp={setPopUp}
+              allUsers={allUsers}
+              setFormState={setFormState}
+              formState={formState}
+              usuarioAsignado={usuarioAsignado}
+              setUsuarioAsignado={setUsuarioAsignado}
+              tag={tag}
+              setTag={setTag}
+              addTag={addTag}
+              setAddTag={setAddTag}
+              onChangeCheckTag={onChangeCheckTag}
+            />
+          ) : null
+        }
+        {
+          (
+            <div className="flex justify-start h-4/5">
+              <DragDrop id={id} allProjectTasks={allProjectTasks} onDeleteTask={onDeleteTask} onUpdateTask={onUpdateTask} />
+            </div>
+          )
+        }
+      </div>
+    </>
+
+  )
 }
 
 export default Project
