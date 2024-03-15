@@ -50,7 +50,7 @@ export const PopUpNewTask = (
                     </div>
                     <div className="py-3">
                         <label htmlFor="">Estado: </label>
-                        <select onChange={() => setFormState({ ...formState, stateTask: event.target.value })} value={formState.stateTask} className="border-2 rounded-md pr-10">
+                        <select onChange={() => setFormState({ ...formState, estado: event.target.value })} value={formState.stateTask} className="border-2 rounded-md pr-10">
                             <option value="doing">Doing</option>
                             <option value="finished">Finish</option>
                             <option value="paused">Paused</option>

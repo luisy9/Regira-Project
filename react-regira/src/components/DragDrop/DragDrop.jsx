@@ -62,11 +62,13 @@ const Item = ({ id, item, caixa, setTask, task, items, setItems }) => {
     return (
         <>
             <div
+            key={item.estado}
                 ref={drag}
                 className={`border shadow-lg px-3 my-4 w-full h-44 active:border-2 active:border-[#2681FF] text-black rounded-md cursor-grab`}
                 style={{ opacity: isDragging ? 0.5 : 1 }}
             >
                 <h1 className='text-bold text-3xl'>{item.tipo}</h1>
+                <h1 className='text-4xl'>{item.estado}</h1>
                 <p className='text-xl'>{item.titulo}</p>
                 <p className='text-sm'>{item.descripcion}</p>
                 <div className='flex'>
@@ -82,7 +84,6 @@ const Item = ({ id, item, caixa, setTask, task, items, setItems }) => {
                         </div>
                     </div>
                 </div>
-                {console.log([tag])}
                 {tag[0]?.map(e => {
                     return (
                         <>
