@@ -58,8 +58,8 @@ export const Project = () => {
     prioridad: 'High',
     estado: 'doing',
   });
-  const [enums, setEnums] = useState([]);
 
+  const [enums, setEnums] = useState([]);
   const newTareaInProject = () => {
     event.preventDefault();
 
@@ -154,11 +154,12 @@ export const Project = () => {
         })
         .then(fetch(url + '/tarea/' + popUp.idTask + '/enum')
           .then(res => res.json())
-          .then(data => setEnums(data.enum))
+          .then(data => setEnums([data]))
           .catch(error => console.log(error)))
         .catch(error => console.log(error))
     }
   }, [popUp]);
+
 
   return (
     <>

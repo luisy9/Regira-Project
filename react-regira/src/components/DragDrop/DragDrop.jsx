@@ -74,7 +74,7 @@ const Item = ({ id, item, caixa, setTask, task, items, setItems, onDeleteTask, o
                 <div className='flex justify-between items-center'>
                     <h1 className='text-bold text-3xl'>{item.tipo}</h1>
                     <div className='' onClick={() => onUpdateTask(item.id)}>
-                        <img src='/editar.png' alt='edit' className='w-7 h-7 cursor-pointer' />
+                        <img src='/editar.png' alt='edit' className='w-6 h-6 cursor-pointer' />
                     </div>
                 </div>
                 <p className='text-xl'>{item.titulo}</p>
