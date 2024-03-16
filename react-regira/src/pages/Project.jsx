@@ -15,12 +15,17 @@ export const Project = () => {
   const [usuarioAsignado, setUsuarioAsignado] = useState([]);
   const [tag, setTag] = useState([]);
   const [addTag, setAddTag] = useState([]);
+  const [taskUpdate, setTaskUpdate] = useState([]);
 
   //Set modal create tag open || Set modal update open
-  const [popUp, setPopUp] = useState({
-    createTask: false,
-    updateTask: false
-  });
+  const [popUp, setPopUp] = useState([
+    { createTask: false },
+    {
+      updateTask: false,
+      idTask: null
+    }
+  ]);
+
 
   useEffect(() => {
     if (!logued) {
@@ -53,7 +58,7 @@ export const Project = () => {
     prioridad: 'High',
     estado: 'doing',
   });
-
+  const [enums, setEnums] = useState([]);
 
   const newTareaInProject = () => {
     event.preventDefault();
@@ -114,7 +119,7 @@ export const Project = () => {
       }
     })
   }
-
+  //Delete one Task
   const onDeleteTask = () => {
     const opcions = {
       method: 'GET',
@@ -127,9 +132,33 @@ export const Project = () => {
       .catch(error => console.log(error))
   }
 
-  const onUpdateTask = () => {
-    setPopUp({ ...popUp, updateTask: true });
+  //Open modal update task  
+  const onUpdateTask = (id) => {
+    setPopUp({ createTask: false, updateTask: true, idTask: id });
   }
+
+  useEffect(() => {
+    if (popUp.updateTask) {
+      const opcions = {
+        method: 'GET',
+        credentials: 'include'
+      };
+
+
+      //Consulta para sacar los enum de el tipo de tarea
+      fetch(url + '/tarea/' + popUp.idTask, opcions)
+        .then(res => res.json())
+        .then(data => {
+          setTaskUpdate([data])
+          setFormState({ ...formState, tipo: data.tipo })
+        })
+        .then(fetch(url + '/tarea/' + popUp.idTask + '/enum')
+          .then(res => res.json())
+          .then(data => setEnums(data.enum))
+          .catch(error => console.log(error)))
+        .catch(error => console.log(error))
+    }
+  }, [popUp]);
 
   return (
     <>
@@ -139,7 +168,15 @@ export const Project = () => {
         </div>
         {
           popUp.updateTask ?
-            <PopUpUpdateTask closeTag={setPopUp} popUp={popUp} /> : null
+            <PopUpUpdateTask
+              closeTag={setPopUp}
+              popUp={popUp}
+              taskUpdate={taskUpdate}
+              formState={formState}
+              setFormState={setFormState}
+              setEnums={setEnums}
+              enums={enums}
+            /> : null
         }
         {
           popUp.createTask ? (

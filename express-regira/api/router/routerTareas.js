@@ -7,7 +7,7 @@ const jwt = require('jsonwebtoken');
 
 const SECRET_KEY = 'en-pinxo-li-va-dir-a-en-panxo'; // Clau secreta per a la generació de JWT
 const { Proyecto, Usuario, Tarea, Tag } = require('../model'); // Importa els models de dades
-const { readItems, readItem, deleteItem, updateItem } = require('../generics');
+const { readItems, readItem, getEnum ,deleteItem, updateItem } = require('../generics');
 
 //AUTHENTICATION
 //AUTHENTICATION
@@ -44,6 +44,11 @@ router.get(
 router.get(
   '/tarea/:id',
   async (req, res, next) => await readItem(req, res, Tarea)
+);
+
+router.get(
+  '/tarea/:id/enum',
+  async (req, res, next) => await getEnum(req, res, Tarea)
 );
 
 router.put(
@@ -172,7 +177,7 @@ router.put('/tarea', checkToken, async (req, res, next) => {
   }
 });
 
-//Endpoint para 
+//Endpoint para
 router.get('/tarea/:id/tags', checkToken, async (req, res, next) => {
   try {
     const id = req.params.id;
@@ -190,7 +195,7 @@ router.get('/tarea/:id/tags', checkToken, async (req, res, next) => {
 
     //Coger los tags
     const tagsDeTareas = tareaConTags.dataValues.tags;
-    
+
     //Hacer un filtrado para ver todos los tags de esa tarea
     const allTagsTarea = tagsDeTareas
       .filter((tag) => tag.tareas_has_tags.tareaId !== id)
