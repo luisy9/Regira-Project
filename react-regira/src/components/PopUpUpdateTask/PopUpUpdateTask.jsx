@@ -1,10 +1,12 @@
 import { useState } from "react";
+import OptionsEnum from "../optionsEnum/OptionsEnum";
 
 export const PopUpUpdateTask = ({ closeTag, popUp, taskUpdate, setFormState, formState, enums, setEnums }) => {
+    console.log(taskUpdate)
 
     const [formStateUpdate, setFormStateUpdate] = useState({
         tipo: 'feature',
-        titulo: '',
+        titulo: taskUpdate[0]?.titulo,
         descripcion: '',
         prioridad: 'High',
         estado: 'doing',
@@ -46,19 +48,9 @@ export const PopUpUpdateTask = ({ closeTag, popUp, taskUpdate, setFormState, for
                                                     <h1>Tipo:</h1>
                                                     {enums.map(e => (
                                                         e.enumTipo.map(tipo => (
-                                                            task.tipo == tipo
-                                                                ? (
-                                                                    <div key={task.tipo} className={`border rounded-lg cursor-pointer px-1
-                                                                         ${formState.tipo === task.tipo ? `bg-[#0054CD] text-white` : null}`}
-                                                                        onClick={() => setFormState({ ...formState, tipo: task.tipo })}>{task.tipo}
-                                                                    </div>
-                                                                )
-                                                                : (
-                                                                    <div key={tipo} className={`cursor-pointer border rounded-md px-1
-                                                                         ${formState.tipo === tipo ? `bg-[#0054CD] text-white` : null}`}
-                                                                        onClick={() => setFormState({ ...formState, tipo: tipo })}>{tipo}
-                                                                    </div>
-                                                                )
+                                                            <>
+                                                                <OptionsEnum nameTipo={'tipo'} tipo={tipo} task={task} setFormStateUpdate={setFormStateUpdate} formStateUpdate={formStateUpdate} />
+                                                            </>
                                                         ))
                                                     ))}
                                                 </div>
@@ -69,19 +61,24 @@ export const PopUpUpdateTask = ({ closeTag, popUp, taskUpdate, setFormState, for
                                                         <h1>Prioridad:</h1>
                                                         {enums.map(e => (
                                                             e.enumPrioridad.map(prioridad => (
-                                                                task.prioridad == prioridad
-                                                                    ? (
-                                                                        <div key={task.prioridad} className={`border rounded-lg cursor-pointer px-1
-                                                                             ${formState.prioridad === task.prioridad ? `bg-[#0054CD] text-white` : null}`}
-                                                                            onClick={() => setFormState({ ...formState, prioridad: task.prioridad })}>{task.prioridad}
-                                                                        </div>
-                                                                    )
-                                                                    : (
-                                                                        <div key={prioridad} className={`cursor-pointer border rounded-md px-1
-                                                                             ${formState.prioridad === prioridad ? `bg-[#0054CD] text-white` : null}`}
-                                                                            onClick={() => setFormState({ ...formState, prioridad: prioridad })}>{prioridad}
-                                                                        </div>
-                                                                    )
+                                                                <>
+                                                                    <OptionsEnum nameTipo={'prioridad'} tipo={prioridad}
+                                                                        task={task} setFormStateUpdate={setFormStateUpdate} formStateUpdate={formStateUpdate} />
+                                                                </>
+
+                                                                // task.prioridad == prioridad
+                                                                //     ? (
+                                                                //         <div key={task.prioridad} className={`border rounded-lg cursor-pointer px-1
+                                                                //              ${formState.prioridad === task.prioridad ? `bg-[#0054CD] text-white` : null}`}
+                                                                //             onClick={() => setFormState({ ...formState, prioridad: task.prioridad })}>{task.prioridad}
+                                                                //         </div>
+                                                                //     )
+                                                                //     : (
+                                                                //         <div key={prioridad} className={`cursor-pointer border rounded-md px-1
+                                                                //              ${formState.prioridad === prioridad ? `bg-[#0054CD] text-white` : null}`}
+                                                                //             onClick={() => setFormState({ ...formState, prioridad: prioridad })}>{prioridad}
+                                                                //         </div>
+                                                                //     )
                                                             ))
                                                         ))}
                                                     </div>
@@ -90,8 +87,9 @@ export const PopUpUpdateTask = ({ closeTag, popUp, taskUpdate, setFormState, for
                                         </div>
 
                                         <div className="py-2">
-                                            {task.titulo ? <input className="border rounded-md" type="text" name="titulo" value={formState.titulo}
-                                                onChange={() => setFormState({ ...formState, titulo: event.target.value })} /> : null}
+                                            <p>A{formStateUpdate.titulo}</p>
+                                            {task.titulo ? <input className="border rounded-md" type="text" value={formStateUpdate.titulo}
+                                                onChange={() => setFormStateUpdate({ ...formStateUpdate, titulo: event.target.value })} /> : null}
                                         </div>
                                         {
                                             task.estado ? (
