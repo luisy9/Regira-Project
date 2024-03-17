@@ -3,7 +3,7 @@ const Sequelize = require('sequelize'); // Importa la llibreria Sequelize
 
 const bcrypt = require('bcrypt'); // Importa la llibreria bcrypt per a encriptar contrasenyes
 
-const sequelize = new Sequelize('regira', 'root', 'my-secret-pw', {
+const sequelize = new Sequelize('regira', 'root', 'admin', {
   //host: 'localhost',
   host: 'localhost', //IP de la base de dades
   dialect: 'mysql', // connectem a mysql
@@ -161,7 +161,7 @@ async function iniBD() {
 }
 
 //Comentamos para que no se sobreescriban las tablas
-// iniBD();
+//iniBD();
 
 // Exporta els models per a poder ser utilitzats en altres parts de l'aplicació
 module.exports = {

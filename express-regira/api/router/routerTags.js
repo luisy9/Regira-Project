@@ -111,12 +111,13 @@ router.post('/tag/tarea/:tareaId', async (req, res, next) => {
 });
 
 //Endpoint para crear un tag con un usuario especifico
-router.post('/tag/user/:id', checkToken, async (req, res, next) => {
+router.post('/tag/user/:id' , async (req, res, next) => {
   try {
     const { nombre } = req.body;
-    const { id } = req.params.id;
+    const id = req.params.id;
+    console.log(id)
 
-    const user = await Usuario.findOne({ where: { id } }); // Cerca l'usuari pel seu ID
+    const user = await Usuario.findByPk(id) // Cerca l'usuari pel seu ID
     if (!user) {
       return res.status(500).json({ error: 'User no trobat' }); // Retorna error 500 si no es troba l'usuari
     }

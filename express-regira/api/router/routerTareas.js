@@ -1,13 +1,20 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 
-const multer = require('multer');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
+const multer = require("multer");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
-const SECRET_KEY = 'en-pinxo-li-va-dir-a-en-panxo'; // Clau secreta per a la generació de JWT
-const { Proyecto, Usuario, Tarea, Tag } = require('../model'); // Importa els models de dades
-const { readItems, readItem, getEnum ,deleteItem, updateItem } = require('../generics');
+const SECRET_KEY = "en-pinxo-li-va-dir-a-en-panxo"; // Clau secreta per a la generació de JWT
+const { Proyecto, Usuario, Tarea, Tag } = require("../model"); // Importa els models de dades
+const {
+  readItems,
+  readItem,
+  getEnum,
+  deleteItem,
+  updateItem,
+  getAllEnums,
+} = require("../generics");
 
 //AUTHENTICATION
 //AUTHENTICATION
@@ -17,7 +24,7 @@ const { readItems, readItem, getEnum ,deleteItem, updateItem } = require('../gen
 const checkToken = (req, res, next) => {
   const token = req.cookies?.token; // Obté el token des de la cookie de la petició
   if (!token) {
-    return res.status(401).json({ error: 'Unauthorized' }); // Retorna error 401 si no hi ha cap token
+    return res.status(401).json({ error: "Unauthorized" }); // Retorna error 401 si no hi ha cap token
   }
 
   try {
@@ -25,7 +32,7 @@ const checkToken = (req, res, next) => {
     req.userId = decodedToken.userId; // Estableix l'ID d'usuari a l'objecte de la petició
     next(); // Passa al següent middleware
   } catch (error) {
-    return res.status(401).json({ error: 'Invalid token' }); // Retorna error 401 si el token és invàlid
+    return res.status(401).json({ error: "Invalid token" }); // Retorna error 401 si el token és invàlid
   }
 };
 
@@ -37,32 +44,77 @@ const checkToken = (req, res, next) => {
 //CRUD
 
 router.get(
-  '/tarea',
+  "/tarea",
   async (req, res, next) => await readItems(req, res, Tarea)
 );
 
 router.get(
-  '/tarea/:id',
+  "/tarea/:id",
   async (req, res, next) => await readItem(req, res, Tarea)
 );
 
-router.get(
-  '/tarea/:id/enum',
-  async (req, res, next) => await getEnum(req, res, Tarea)
-);
+router.get("/enum", async (req, res, next) => {
+  try {
+    const enums = await Tarea.describe();
+
+    const camposTipo = enums["tipo"];
+    const camposPrioridad = enums["prioridad"];
+    const camposEstado = enums["estado"];
+
+    const isEnumTipo = camposTipo.type.slice(0, 4);
+    const isEnumPrioridad = camposPrioridad.type.slice(0, 4);
+    const isEnumEstado = camposEstado.type.slice(0, 4);
+
+    if (
+      !camposTipo ||
+      !camposPrioridad ||
+      !camposEstado ||
+      isEnumTipo !== "ENUM" ||
+      isEnumPrioridad !== "ENUM" ||
+      isEnumEstado !== "ENUM"
+    ) {
+      return res
+        .status(404)
+        .json({ error: "El campo especificado no es ENUM o no existe" });
+    }
+
+    const newEnumsTipo = camposTipo.type.slice(5, -1).split(",");
+    const arrayNewEnumsTipo = newEnumsTipo.map((e) => {
+      return e.slice(1, -1);
+    });
+
+    const newEnumsPrioridad = camposPrioridad.type.slice(5, -1).split(",");
+    const arrayNewEnumsPrioridad = newEnumsPrioridad.map((e) => {
+      return e.slice(1, -1);
+    });
+
+    const newEnumsEstado = camposEstado.type.slice(5, -1).split(",");
+    const arrayNewEnumsEstado = newEnumsEstado.map((e) => {
+      return e.slice(1, -1);
+    });
+
+    res.status(200).json({
+      enumTipo: arrayNewEnumsTipo,
+      enumPrioridad: arrayNewEnumsPrioridad,
+      enumEstado: arrayNewEnumsEstado,
+    });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
 
 router.put(
-  '/tarea/:id',
+  "/tarea/:id",
   async (req, res, next) => await updateItem(req, res, Tarea)
 );
 
 router.delete(
-  '/tarea/:id',
+  "/tarea/:id",
   async (req, res, next) => await deleteItem(req, res, Tarea)
 );
 
 //Todas las tareas de un usuario especifico
-router.get('/tarea/users/:id', async (req, res, next) => {
+router.get("/tarea/users/:id", async (req, res, next) => {
   const usuarioTareas = await Tarea.findAll({
     where: { usuarios_id: req.params.id },
   });
@@ -70,26 +122,26 @@ router.get('/tarea/users/:id', async (req, res, next) => {
   if (!usuarioTareas) {
     return res
       .status(404)
-      .json({ error: 'El usuario no tiene asignadas tareas' });
+      .json({ error: "El usuario no tiene asignadas tareas" });
   }
   res.status(200).json(usuarioTareas);
 });
 
 //Todas las tareas de el author en concreto
-router.get('/tarea/author/:id', async (req, res, next) => {
+router.get("/tarea/author/:id", async (req, res, next) => {
   const authorId = await Tarea.findAll({
     where: { author_id: req.params.id },
   });
 
   if (!authorId) {
-    return res.status(404).json({ error: 'El author no tiene tareas creadas' });
+    return res.status(404).json({ error: "El author no tiene tareas creadas" });
   }
 
   res.status(201).json(authorId);
 });
 
 //Todas las tareas de un proyecto en especifico
-router.get('/tarea/proyecto/:id', async (req, res, next) => {
+router.get("/tarea/proyecto/:id", async (req, res, next) => {
   const TareasProyecto = await Tarea.findAll({
     where: { proyectos_id: req.params.id },
   });
@@ -97,14 +149,14 @@ router.get('/tarea/proyecto/:id', async (req, res, next) => {
   if (!TareasProyecto) {
     return res
       .status(404)
-      .json({ error: 'El proyecto no tiene ninguna tarea' });
+      .json({ error: "El proyecto no tiene ninguna tarea" });
   }
 
   res.status(201).json(TareasProyecto);
 });
 
 //Crear una nueva tarea dentro de el proyecto, en el drag and drope
-router.post('/tarea/proyecto/:id', checkToken, async (req, res, next) => {
+router.post("/tarea/proyecto/:id", checkToken, async (req, res, next) => {
   try {
     const { id, author_id } = req.body;
 
@@ -115,7 +167,7 @@ router.post('/tarea/proyecto/:id', checkToken, async (req, res, next) => {
     if (!userId || !proyectoId) {
       return res
         .status(404)
-        .json({ message: 'No existe el proyecto o el usuario' });
+        .json({ message: "No existe el proyecto o el usuario" });
     }
 
     const tarea = await Tarea.create(req.body);
@@ -128,7 +180,8 @@ router.post('/tarea/proyecto/:id', checkToken, async (req, res, next) => {
 });
 
 //Endpoint para hacer un UPDATE de las tareas dentro de un proyecto, que tenga usuarios asignados y un author
-router.put('/tarea', checkToken, async (req, res, next) => {
+router.put("/tarea", checkToken, async (req, res, next) => {
+  console.log(req.body);
   try {
     const { body } = req;
     const resultado = await Promise.all(
@@ -152,7 +205,7 @@ router.put('/tarea', checkToken, async (req, res, next) => {
         if (!user || !proyecto || !id) {
           return res
             .status(500)
-            .json({ error: 'El user o el proyecto no existen' }); // Retorna error 500 si no es troba l'usuari
+            .json({ error: "El user o el proyecto no existen" }); // Retorna error 500 si no es troba l'usuari
         }
 
         //Tengo que hacer un update
@@ -178,12 +231,12 @@ router.put('/tarea', checkToken, async (req, res, next) => {
 });
 
 //Endpoint para
-router.get('/tarea/:id/tags', checkToken, async (req, res, next) => {
+router.get("/tarea/:id/tags", checkToken, async (req, res, next) => {
   try {
     const id = req.params.id;
 
     if (!id) {
-      return res.status(500).json({ error: 'El enpoint no ha recibido un id' }); // Retorna error 500 si no ha recibido un id
+      return res.status(500).json({ error: "El enpoint no ha recibido un id" }); // Retorna error 500 si no ha recibido un id
     }
 
     const tarea = await Tarea.findByPk(id);
@@ -206,7 +259,7 @@ router.get('/tarea/:id/tags', checkToken, async (req, res, next) => {
     if (!tarea) {
       return res
         .status(500)
-        .json({ error: 'No se ha encontrado una tarea con ese id' });
+        .json({ error: "No se ha encontrado una tarea con ese id" });
     }
 
     res.status(200).json(allTagsTarea);

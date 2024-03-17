@@ -1,6 +1,7 @@
 import { NavLink } from 'react-router-dom'
 
 export const TargetProject = ({ proyectoId, proyecto }) => {
+    console.log(proyecto)
     return (
         <NavLink to={'/proyecto/' + proyectoId}>
             <div className='border shadow-md rounded-md w-63 h-40 flex hover:shadow-xl hover:cursor-pointer'>

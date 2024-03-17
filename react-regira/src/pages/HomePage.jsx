@@ -12,13 +12,14 @@ export const HomePage = () => {
 
   useEffect(() => {
     const opcions = {
+      method: 'GET',
       credentials: 'include',
     };
 
     if (logued) {
-      fetch(url + '/proyecto/' + logued, opcions).then(res => res.json()).then(data => {
+      fetch(url + '/proyecto/user/' + logued, opcions).then(res => res.json()).then(data => {
         if (data) {
-          setProyectos([data]);
+          setProyectos(data);
         }
       }).catch(error => console.log(error))
     }
@@ -44,7 +45,7 @@ export const HomePage = () => {
       <h1 className="pt-4 font-medium">Proyectos recientes</h1>
       <div className="flex gap-5 py-3">
         {
-          proyectos.length > 0 ? proyectos.map(proyecto => <TargetProject proyectoId={proyecto.id} proyecto={proyecto} key={proyecto.id} />) : <></>
+          proyectos.error ? <></> : proyectos.map(proyecto => <TargetProject proyectoId={proyecto.id} proyecto={proyecto} key={proyecto.id} />)
         }
       </div>
     </div>
