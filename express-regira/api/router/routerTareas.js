@@ -103,10 +103,10 @@ router.get("/enum", async (req, res, next) => {
   }
 });
 
-router.put(
-  "/tarea/:id",
-  async (req, res, next) => await updateItem(req, res, Tarea)
-);
+// router.put(
+//   "/tarea/:id",
+//   async (req, res, next) => await updateItem(req, res, Tarea)
+// );
 
 router.delete(
   "/tarea/:id",
@@ -181,7 +181,6 @@ router.post("/tarea/proyecto/:id", checkToken, async (req, res, next) => {
 
 //Endpoint para hacer un UPDATE de las tareas dentro de un proyecto, que tenga usuarios asignados y un author
 router.put("/tarea", checkToken, async (req, res, next) => {
-  console.log(req.body);
   try {
     const { body } = req;
     const resultado = await Promise.all(
@@ -202,7 +201,9 @@ router.put("/tarea", checkToken, async (req, res, next) => {
         const proyecto = await Proyecto.findByPk(proyectos_id);
         const idTarea = await Tarea.findByPk(id);
 
-        if (!user || !proyecto || !id) {
+
+
+        if (!user || !proyecto || !idTarea) {
           return res
             .status(500)
             .json({ error: "El user o el proyecto no existen" }); // Retorna error 500 si no es troba l'usuari
@@ -229,6 +230,63 @@ router.put("/tarea", checkToken, async (req, res, next) => {
     res.status(404).json({ error: error.message });
   }
 });
+
+router.put('/tarea/:id/proyecto/:idproyecto', checkToken, async (req, res, next) => {
+  try{
+    const { body } = req;
+    const {id, idproyecto } = req.params
+
+    const resultado = await Promise.all(
+      body.map(async (credencial) => {
+        const {
+          usuarios_id,
+          proyectos_id,
+          tipo,
+          titulo,
+          prioridad,
+          estado,
+          author_id,
+          descripcion,
+        } = credencial;
+
+        const user = await Usuario.findByPk(usuarios_id); // Cerca l'usuari pel seu ID
+        const proyecto = await Proyecto.findByPk(proyectos_id);
+        const idTarea = await Tarea.findByPk(id);
+
+
+
+        if (!user || !proyecto || !idTarea) {
+          return res
+            .status(500)
+            .json({ error: "El user o el proyecto no existen" }); // Retorna error 500 si no es troba l'usuari
+        }
+
+        //Tengo que hacer un update
+        const tarea = await idTarea.update({
+          tipo: tipo,
+          titulo: titulo,
+          descripcion: descripcion,
+          prioridad: prioridad,
+          estado: estado,
+          proyectos_id: proyectos_id,
+          usuarios_id: usuarios_id,
+          author_id: author_id,
+        });
+
+        return tarea;
+      })
+    );
+  
+    const allTareas = await Tarea.findAll({
+      where: {proyectos_id: idproyecto}
+    });
+
+    res.status(201).json(allTareas)
+
+  } catch(error) {
+    console.log({ error: error.message });
+  }
+})
 
 //Endpoint para coger los tags de una tarea
 router.get("/tarea/:id/tags", checkToken, async (req, res, next) => {

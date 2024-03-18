@@ -113,7 +113,7 @@ export const Project = () => {
           .then((res) => res.json())
           .then((data) => {
             setAllProjectTasks((updatedItems) => [...updatedItems, data]);
-            setPopUp({ ...popUp, createTask: false });
+              setPopUp({ ...popUp, createTask: false });
 
             fetch(url + "/tag/tarea/" + data.id, {
               ...opcions,
@@ -257,6 +257,9 @@ export const Project = () => {
             enumsTypes={enumsTypes}
             tag={tag}
             actualTagsChecked={actualTagsChecked}
+            idProject={id}
+            idUser={logued}
+            setAllProjectTasks={setAllProjectTasks}
           />
         ) : null}
         {popUp.createTask ? (
@@ -285,6 +288,7 @@ export const Project = () => {
               onDeleteTask={onDeleteTask}
               onUpdateTask={onUpdateTask}
               enumsTypes={enumsTypes}
+              setAllProjectTasks={setActualTagsChecked}
             />
           </div>
         }

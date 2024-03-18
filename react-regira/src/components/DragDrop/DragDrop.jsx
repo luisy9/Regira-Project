@@ -232,7 +232,7 @@ export const DragDrop = ({
         .catch((error) => console.log(error));
       //setValueInput("");
     }
-  }, [task]);
+  }, [task]); 
 
   const onChangeTextArea = (value) => {
     setValueInput(value);
