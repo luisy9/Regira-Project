@@ -26,7 +26,8 @@ const Item = ({
       method: "GET",
       credentials: "include",
     };
-
+    
+    console.log(items)
     fetch(url + "users/" + item.usuarios_id, opcions)
       .then((res) => res.json())
       .then((email) => setEmailUser(email.email))
@@ -187,13 +188,16 @@ export const DragDrop = ({
   const [valueInput, setValueInput] = useState("");
 
   useEffect(() => {
-    setIdTarea(allProjectTasks[0]);
-    fetch(url + "tarea/" + idTarea?.id + "/enum")
-      .then((res) => res.json())
-      .then((data) => setEnumsEstado(data.enumEstado))
-      .catch((error) => console.log(error));
+    if (allProjectTasks.length > 0) {
+      setIdTarea(allProjectTasks[0]);
+      
+        fetch(url + "tarea/" + idTarea?.id + "/enum")
+          .then((res) => res.json())
+            .then((data) => setEnumsEstado(data.enumEstado))
+              .catch((error) => console.log(error));
 
-    setItems([...allProjectTasks]);
+      setTask([...allProjectTasks]);
+    }
   }, [allProjectTasks]);
 
   // funció que "Mou" un element d'una caixa a l'altra
@@ -207,9 +211,10 @@ export const DragDrop = ({
     setTask(nousItems);
   };
 
-  //Reset Input
+  //Update DragAnDrope cuando movemos una tarea
   useEffect(() => {
     if (task.length > 0) {
+      //console.log(task)
       const opcions = {
         method: "PUT",
         credentials: "include",
@@ -223,7 +228,7 @@ export const DragDrop = ({
         .then((res) => res.json())
         .then((data) => setItems(data))
         .catch((error) => console.log(error));
-      setValueInput("");
+      //setValueInput("");
     }
   }, [task]);
 
@@ -238,7 +243,7 @@ export const DragDrop = ({
   return (
     <DndProvider backend={HTML5Backend}>
       <div className="w-full flex gap-5">
-        {enumsTypes.map((caixa) => (
+        {enumsTypes.enumEstado?.map((caixa) => (
           <div className="w-full" key={caixa}>
             <Box key={caixa} title={caixa} mouItem={mouItem}>
               {items.length > 0

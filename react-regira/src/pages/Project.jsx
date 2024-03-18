@@ -17,6 +17,14 @@ export const Project = () => {
   const [taskUpdate, setTaskUpdate] = useState([]);
   const [enumsTypes, setEnumsTypes] = useState([]);
 
+  const [formState, setFormState] = useState({
+    tipo: "",
+    titulo: "",
+    descripcion: "",
+    prioridad: "",
+    estado: "",
+  });
+
   //Set modal create tag open || Set modal update open
   const [popUp, setPopUp] = useState([
     { createTask: false },
@@ -47,24 +55,30 @@ export const Project = () => {
         .then(
           fetch(url + "/tarea/proyecto/" + id, opcions)
             .then((res) => res.json())
-            .then((tasks) => setAllProjectTasks(tasks))
+            .then((tasks) => {
+              if (tasks) {
+                setAllProjectTasks(tasks);
+              }
+            })
         )
         .catch((error) => console.log(error));
 
       fetch(url + "/enum", opcions)
         .then((res) => res.json())
-        .then((enums) => setEnumsTypes(enums.enumEstado))
+        .then((enums) => {
+          setEnumsTypes(enums);
+
+          setFormState({
+            tipo: enums.enumTipo[0],
+            titulo: "",
+            descripcion: "",
+            prioridad: enums.enumPrioridad[0],
+            estado: enums.enumEstado[0],
+          });
+        })
         .catch((error) => console.log(error));
     }
   }, []);
-
-  const [formState, setFormState] = useState({
-    tipo: "feature",
-    titulo: "",
-    descripcion: "",
-    prioridad: "High",
-    estado: "doing",
-  });
 
   const [enums, setEnums] = useState([]);
 
@@ -87,18 +101,45 @@ export const Project = () => {
     };
 
     const finalTags = addTag.filter((e) => Object.values(e)[0] !== false);
-    fetch(url + "/tarea/proyecto/" + id, opcions)
+
+    fetch(url + "/tarea/proyecto/" + parseInt(id), {
+      method: "GET",
+      credentials: "include",
+    })
       .then((res) => res.json())
-      .then((data) => {
-        setAllProjectTasks([...allProjectTasks, data]);
-        setPopUp({ ...popUp, createTask: false });
-        fetch(url + "/tag/tarea/" + data.id, {
-          ...opcions,
-          body: JSON.stringify({ finalTags: [...finalTags] }),
-        })
+      .then((updatedItems) => setAllProjectTasks(updatedItems))
+      .then(
+        fetch(url + "/tarea/proyecto/" + parseInt(id), opcions)
           .then((res) => res.json())
-          .then((data) => console.log(data))
-          .catch((error) => console.log(error));
+          .then((data) => {
+            setAllProjectTasks((updatedItems) => [...updatedItems, data]);
+            setPopUp({ ...popUp, createTask: false });
+
+            fetch(url + "/tag/tarea/" + data.id, {
+              ...opcions,
+              body: JSON.stringify({ finalTags: [...finalTags] }),
+            })
+              .then((res) => res.json())
+              .then((data) => console.log(data))
+              .catch((error) => console.log(error));
+          })
+          .catch((error) => console.log(error))
+      )
+      .catch((error) => console.log(error));
+
+    //Reseteamos los valores del form por defecto
+    fetch(url + "/enum", opcions)
+      .then((res) => res.json())
+      .then((enums) => {
+        setEnumsTypes(enums);
+
+        setFormState({
+          tipo: enums.enumTipo[0],
+          titulo: "",
+          descripcion: "",
+          prioridad: enums.enumPrioridad[0],
+          estado: enums.enumEstado[0],
+        });
       })
       .catch((error) => console.log(error));
   };
@@ -195,6 +236,7 @@ export const Project = () => {
             setFormState={setFormState}
             setEnums={setEnums}
             enums={enums}
+            enumsTypes={enumsTypes}
           />
         ) : null}
         {popUp.createTask ? (
@@ -212,6 +254,7 @@ export const Project = () => {
             addTag={addTag}
             setAddTag={setAddTag}
             onChangeCheckTag={onChangeCheckTag}
+            enumsTypes={enumsTypes}
           />
         ) : null}
         {
