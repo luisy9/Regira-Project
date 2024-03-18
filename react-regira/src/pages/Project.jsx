@@ -144,6 +144,7 @@ export const Project = () => {
       .catch((error) => console.log(error));
   };
 
+  //OPEN MODAL CREATE TASK
   const openModal = () => {
     setPopUp({ ...popUp, createTask: true });
     setAddTag([]);
@@ -160,6 +161,7 @@ export const Project = () => {
       .catch((error) => console.log(error));
   };
 
+  //Change Tag in task
   const onChangeCheckTag = (tag) => {
     setAddTag((addTag) => {
       if (addTag.length === 0) {
@@ -174,6 +176,8 @@ export const Project = () => {
       }
     });
   };
+
+  //DELETE
   //Delete one Task
   const onDeleteTask = () => {
     const opcions = {
@@ -187,9 +191,27 @@ export const Project = () => {
       .catch((error) => console.log(error));
   };
 
+  //UPDATE MODAL
   //Open modal update task
+  const [actualTagsChecked, setActualTagsChecked] = useState([]);
   const onUpdateTask = (id) => {
     setPopUp({ createTask: false, updateTask: true, idTask: id });
+
+    const opcions = {
+      method: "GET",
+      credentials: "include",
+    };
+
+    fetch(url + "/tag", opcions)
+      .then((res) => res.json())
+      .then((data) => setTag(data))
+      .then(
+        fetch(url + "/tarea/" + id + "/tags", opcions)
+          .then((res) => res.json())
+          .then((data) => setActualTagsChecked(data))
+          .catch((error) => console.log(error))
+      )
+      .catch((error) => console.log(error));
   };
 
   useEffect(() => {
@@ -232,11 +254,9 @@ export const Project = () => {
             closeTag={setPopUp}
             popUp={popUp}
             taskUpdate={taskUpdate}
-            formState={formState}
-            setFormState={setFormState}
-            setEnums={setEnums}
-            enums={enums}
             enumsTypes={enumsTypes}
+            tag={tag}
+            actualTagsChecked={actualTagsChecked}
           />
         ) : null}
         {popUp.createTask ? (

@@ -1,137 +1,158 @@
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import OptionsEnum from "../optionsEnum/OptionsEnum";
 
-export const PopUpUpdateTask = ({ closeTag, popUp, taskUpdate, setFormState, formState, enums, setEnums }) => {
-    console.log(taskUpdate)
+export const PopUpUpdateTask = ({
+  closeTag,
+  popUp,
+  taskUpdate,
+  enumsTypes,
+  tag,
+  actualTagsChecked,
+}) => {
+  const url = "http://localhost:3000/api";
+  const [formStateUpdate, setFormStateUpdate] = useState({
+    tipo: "",
+    titulo: "",
+    descripcion: "",
+    prioridad: "",
+    estado: "",
+  });
 
-    const [formStateUpdate, setFormStateUpdate] = useState({
-        tipo: 'feature',
-        titulo: taskUpdate[0]?.titulo,
-        descripcion: '',
-        prioridad: 'High',
-        estado: 'doing',
+  const [checkTag, setCheckTag] = useState([]);
+
+  useEffect(() => {
+    setFormStateUpdate({
+      tipo: taskUpdate[0]?.tipo,
+      titulo: taskUpdate[0]?.titulo,
+      descripcion: taskUpdate[0]?.descripcion,
+      prioridad: taskUpdate[0]?.prioridad,
+      estado: taskUpdate[0]?.estado,
     });
 
-    const onSubmitUpdate = (id) => {
-        event.preventDefault();
+    setCheckTag((checkTag) => {
+      r/* eturn tag.map((tags, index) => {
+        const checkedTags = actualTagsChecked.map((e) => {
+            console.log(tags.nombre)
+          if (e.tag == tags.nombre) {
+            return {["tag"]: e.tag, isChecked: true }
+          }
+        });
 
-        const opcions = {
-            method: 'PUT',
-            credentials: 'include'
-        }
+        return [ checkedTags, { ["tag"]: tags.nombre, isChecked: false }];
+      }); */
+    });
+  }, [taskUpdate, actualTagsChecked]);
 
-        fetch(url + '/tarea/' + id, opcions)
-            .then(res => res.json())
-            .then(data => console.log(data))
-            .catch(error => console.log(error))
-    }
+  const onChangeTags = (tag) => {
+    console.log(tag);
+  };
 
-    return (
-        <div className="z-50 flex justify-center items-center backdrop-blur-sm absolute top-0 left-0 w-full h-full">
-            <div className="border-2 bg-white border-[#0054CD] rounded-md w-2/4 h-2/4 px-2 py-2">
-                <div className="flex justify-between">
-                    <h1 className="text-4xl text-bold">Update User</h1>
-                    <div className="flex justify-center items-center text-2xl hover:bg-slate-200 hover:rounded-md"
-                        onClick={() => closeTag({ ...popUp, updateTask: false, idTask: null })}>
-                        <button className="cursor-pointer px-2 w-10 h-full rounded-full" >X</button>
-                    </div>
-                </div>
-                <div className="flex flex-col border">
-                    <form action="" onSubmit={() => onSubmitUpdate(popUp.idTask)}>
-                        {
-                            taskUpdate.map(task => {
-                                return (
-                                    <>
-                                        <div className="">
-                                            {task.tipo ? (
-                                                <div className="flex items-center gap-1 border w-fit px-1 rounded-md h-10">
-                                                    <h1>Tipo:</h1>
-                                                    {enums.map(e => (
-                                                        e.enumTipo.map(tipo => (
-                                                            <>
-                                                                <OptionsEnum nameTipo={'tipo'} tipo={tipo} task={task} setFormStateUpdate={setFormStateUpdate} formStateUpdate={formStateUpdate} />
-                                                            </>
-                                                        ))
-                                                    ))}
-                                                </div>
-                                            ) : null}
-                                            {
-                                                task.prioridad ? (
-                                                    <div className="flex items-center gap-1 border w-fit px-1 rounded-md h-10">
-                                                        <h1>Prioridad:</h1>
-                                                        {enums.map(e => (
-                                                            e.enumPrioridad.map(prioridad => (
-                                                                <>
-                                                                    <OptionsEnum nameTipo={'prioridad'} tipo={prioridad}
-                                                                        task={task} setFormStateUpdate={setFormStateUpdate} formStateUpdate={formStateUpdate} />
-                                                                </>
+  const onSubmitUpdate = (id) => {
+    event.preventDefault();
 
-                                                                // task.prioridad == prioridad
-                                                                //     ? (
-                                                                //         <div key={task.prioridad} className={`border rounded-lg cursor-pointer px-1
-                                                                //              ${formState.prioridad === task.prioridad ? `bg-[#0054CD] text-white` : null}`}
-                                                                //             onClick={() => setFormState({ ...formState, prioridad: task.prioridad })}>{task.prioridad}
-                                                                //         </div>
-                                                                //     )
-                                                                //     : (
-                                                                //         <div key={prioridad} className={`cursor-pointer border rounded-md px-1
-                                                                //              ${formState.prioridad === prioridad ? `bg-[#0054CD] text-white` : null}`}
-                                                                //             onClick={() => setFormState({ ...formState, prioridad: prioridad })}>{prioridad}
-                                                                //         </div>
-                                                                //     )
-                                                            ))
-                                                        ))}
-                                                    </div>
-                                                ) : null
-                                            }
-                                        </div>
+    const opcions = {
+      method: "PUT",
+      credentials: "include",
+    };
 
-                                        <div className="py-2">
-                                            <p>A{formStateUpdate.titulo}</p>
-                                            {task.titulo ? <input className="border rounded-md" type="text" value={formStateUpdate.titulo}
-                                                onChange={() => setFormStateUpdate({ ...formStateUpdate, titulo: event.target.value })} /> : null}
-                                        </div>
-                                        {
-                                            task.estado ? (
-                                                <div className="flex items-center gap-1 border w-fit px-1 rounded-md h-10">
-                                                    <h1>Prioridad:</h1>
-                                                    {enums.map(e => (
-                                                        e.enumEstado.map(estado => (
-                                                            task.estado == estado
-                                                                ? (
-                                                                    <div key={task.estado} className={`border rounded-lg cursor-pointer px-1
-                                                                             ${formState.estado === task.estado ? `bg-[#0054CD] text-white` : null}`}
-                                                                        onClick={() => setFormState({ ...formState, estado: task.estado })}>{task.estado}
-                                                                    </div>
-                                                                )
-                                                                : (
-                                                                    <div key={estado} className={`cursor-pointer border rounded-md px-1
-                                                                             ${formState.estado === estado ? `bg-[#0054CD] text-white` : null}`}
-                                                                        onClick={() => setFormState({ ...formState, estado: estado })}>{estado}
-                                                                    </div>
-                                                                )
-                                                        ))
-                                                    ))}
-                                                </div>
-                                            ) : null
-                                        }
+    fetch(url + "/tarea/" + id, opcions)
+      .then((res) => res.json())
+      .then((data) => console.log(data))
+      .catch((error) => console.log(error));
+  };
 
-                                        <div className="py-2">
-                                            {task.descripcion ? <textarea className="border rounded-md" type="text" name="titulo" value={task.descripcion} onChange={() => setFormState({ ...formState, descripcion: event.target.value })} /> : null}
-                                        </div>
-
-                                        <div className="">
-                                            <button type="submit" className="border rounded-md px-2 py-1 bg-[#0054CD] text-white">Actualizar</button>
-                                        </div>
-                                    </>
-                                )
-                            })
-                        }
-                    </form>
-                </div>
-            </div>
+  return (
+    <div className="z-50 flex justify-center items-center backdrop-blur-sm absolute top-0 left-0 w-full h-full">
+      <div className="border-2 bg-white border-[#0054CD] rounded-md w-2/4 h-2/4 px-2 py-2">
+        <div className="flex justify-between">
+          <h1 className="text-4xl text-bold">Update User</h1>
+          <div
+            className="flex justify-center items-center text-2xl hover:bg-slate-200 hover:rounded-md"
+            onClick={() =>
+              closeTag({ ...popUp, updateTask: false, idTask: null })
+            }
+          >
+            <button className="cursor-pointer px-2 w-10 h-full rounded-full">
+              X
+            </button>
+          </div>
         </div>
-    )
-}
+        <div className="flex flex-col border">
+          <form action="" onSubmit={() => onSubmitUpdate(popUp.idTask)}>
+            {/* Titulo */}
+            <div className="">
+              <input
+                type="text"
+                name="titulo"
+                value={formStateUpdate.titulo}
+                onChange={() =>
+                  setFormStateUpdate({
+                    ...formStateUpdate,
+                    titulo: event.target.value,
+                  })
+                }
+              />
+            </div>
 
-export default PopUpUpdateTask
+            <div className="grid grid-cols-3 border rounded-md px-2 py-1 bg-slate-300">
+              {checkTag.map((tag) => {
+                console.log(tag);
+                return (
+                  <>
+                    {tag.tag ? (
+                      <div className="bg-red-500">{tag.tag}</div>
+                    ) : (
+                      <div>{tag.tag}</div>
+                    )}
+                  </>
+                );
+              })}
+            </div>
+
+            <div className="">
+              <select>
+                {enumsTypes.enumTipo?.map((tipo) => (
+                  <>
+                    <option value={tipo}>{tipo}</option>
+                  </>
+                ))}
+              </select>
+            </div>
+            <div className="">
+              <select name="" id="">
+                {enumsTypes.enumPrioridad.map((tipo) => (
+                  <>
+                    <option value={tipo}>{tipo}</option>
+                  </>
+                ))}
+              </select>
+            </div>
+            <div className="">
+              <select name="" id="">
+                {enumsTypes.enumEstado.map((tipo) => (
+                  <>
+                    <option value={tipo}>{tipo}</option>
+                  </>
+                ))}
+              </select>
+            </div>
+            <div className="border rounded-md">
+              <textarea
+                name="descripcion"
+                value={formStateUpdate.descripcion}
+                onChange={() =>
+                  formStateUpdate({
+                    ...formStateUpdate,
+                    descripcion: formStateUpdate.descripcion,
+                  })
+                }
+              ></textarea>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default PopUpUpdateTask;

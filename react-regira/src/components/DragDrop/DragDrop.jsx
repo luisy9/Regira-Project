@@ -26,11 +26,12 @@ const Item = ({
       method: "GET",
       credentials: "include",
     };
-    
-    console.log(items)
+
     fetch(url + "users/" + item.usuarios_id, opcions)
       .then((res) => res.json())
       .then((email) => setEmailUser(email.email))
+      
+      //Llamada a la api para cojer los tags de cada elemento
       .then(
         fetch(url + "tarea/" + item.id + "/tags", opcions)
           .then((res) => res.json())
@@ -117,7 +118,8 @@ const Item = ({
             return (
               <>
                 <p className="border-2 rounded-md px-1 text-bold">
-                  #{e.id === item.id ? e.tag : <></>}
+                  #
+                  {e?.id === item.id ? e?.tag : <></>}
                 </p>
               </>
             );
@@ -190,11 +192,11 @@ export const DragDrop = ({
   useEffect(() => {
     if (allProjectTasks.length > 0) {
       setIdTarea(allProjectTasks[0]);
-      
-        fetch(url + "tarea/" + idTarea?.id + "/enum")
-          .then((res) => res.json())
-            .then((data) => setEnumsEstado(data.enumEstado))
-              .catch((error) => console.log(error));
+
+      fetch(url + "tarea/" + idTarea?.id + "/enum")
+        .then((res) => res.json())
+        .then((data) => setEnumsEstado(data.enumEstado))
+        .catch((error) => console.log(error));
 
       setTask([...allProjectTasks]);
     }

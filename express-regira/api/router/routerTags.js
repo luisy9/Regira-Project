@@ -38,14 +38,19 @@ const checkToken = (req, res, next) => {
 
 router.get('/tag', async (req, res, next) => await readItems(req, res, Tag)); //Mostrar todos los tags
 router.get('/tag/:id', async (req, res, next) => await readItem(req, res, Tag)); //Mostrar un Tag en especifico
+
 router.put(
   '/tag/:id',
   async (req, res, next) => await updateItem(req, res, Tag)
-); //Hacer un update de un tag en especifico
+); 
+
+//Hacer un update de un tag en especifico
 router.delete(
   '/tag/:id',
   async (req, res, next) => await deleteItem(req, res, Tag)
-); //Hacer un delete de un tag en especifico
+); 
+
+//Hacer un delete de un tag en especifico
 
 //Endpoint para crear un tag
 router.post('/tag', checkToken, async (req, res, next) => {

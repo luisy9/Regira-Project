@@ -230,7 +230,7 @@ router.put("/tarea", checkToken, async (req, res, next) => {
   }
 });
 
-//Endpoint para
+//Endpoint para coger los tags de una tarea
 router.get("/tarea/:id/tags", checkToken, async (req, res, next) => {
   try {
     const id = req.params.id;
@@ -246,21 +246,27 @@ router.get("/tarea/:id/tags", checkToken, async (req, res, next) => {
       include: Tag,
     });
 
+    //console.log(tareaConTags);
+
     //Coger los tags
     const tagsDeTareas = tareaConTags.dataValues.tags;
 
+    //console.log(tagsDeTareas);
+
     //Hacer un filtrado para ver todos los tags de esa tarea
     const allTagsTarea = tagsDeTareas
-      .filter((tag) => tag.tareas_has_tags.tareaId !== id)
-      .map((t) => {
-        return { id: t.tareas_has_tags.tareaId, tag: t.nombre };
-      });
+    .filter((tag) => tag.tareas_has_tags.tareaId !== id)
+    .map((t) => {
+    return { id: t.tareas_has_tags.tareaId, tag: t.nombre };
+    });
 
     if (!tarea) {
-      return res
-        .status(500)
-        .json({ error: "No se ha encontrado una tarea con ese id" });
+    return res
+     .status(500)
+     .json({ error: "No se ha encontrado una tarea con ese id" });
     }
+
+    console.log(allTagsTarea);
 
     res.status(200).json(allTagsTarea);
   } catch (error) {
