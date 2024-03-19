@@ -5,7 +5,6 @@ import DeleteButton from "../deleteButton/DeleteButton";
 
 const ItemType = "ITEM";
 const url = "http://localhost:3000/api/";
-//const CAIXES = ["doing", "finished", "paused", "not doing"];
 
 const Item = ({
   id,
@@ -27,8 +26,6 @@ const Item = ({
       credentials: "include",
     };
 
-    console.log(item.id)
-
     fetch(url + "users/" + item.usuarios_id, opcions)
       .then((res) => res.json())
       .then((email) => setEmailUser(email.email))
@@ -38,15 +35,11 @@ const Item = ({
         fetch(url + "tarea/" + item.id + "/tags", opcions)
           .then((res) => res.json())
           .then((data) => {
-            setTag([...tag, data]);
+            setTag([...data]);
           })
           .catch((errorData) => console.log(errorData))
       )
       .catch((error) => console.log(error));
-  }, [item]);
-
-  useEffect(() => {
-
   }, [item]);
 
   //Drag
@@ -90,6 +83,7 @@ const Item = ({
         className={`border shadow-lg px-3 my-4 w-full h-44 active:border-2 active:border-[#2681FF] text-black rounded-md cursor-grab`}
         style={{ opacity: isDragging ? 0.5 : 1 }}
       >
+        {/* AAAA{tag[0]?.map(e => <p>{e.tag}</p>)} */}
         <div className="flex justify-between items-center">
           <h1 className="text-bold text-3xl">{item.tipo}</h1>
           <div className="" onClick={() => onUpdateTask(item.id)}>
@@ -120,11 +114,11 @@ const Item = ({
           </div>
         </div>
         <div className="flex gap-2">
-          {tag[0]?.map((e) => {
+          {tag?.map((e) => {
             return (
               <>
                 <p className="border-2 rounded-md px-1 text-bold">
-                  #{e?.id === item.id ? e?.tag : <></>}
+                  #{e?.id === item.id ? console.log(e.tag) : <></>}
                 </p>
               </>
             );
