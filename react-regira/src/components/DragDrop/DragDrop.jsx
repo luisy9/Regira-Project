@@ -118,7 +118,7 @@ const Item = ({
             return (
               <>
                 <p className="border-2 rounded-md px-1 text-bold">
-                  #{e?.id === item.id ? console.log(e.tag) : <></>}
+                  #{e?.id === item.id ? e.tag : <></>}
                 </p>
               </>
             );
