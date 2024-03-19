@@ -15,6 +15,14 @@ const {
   updateItem,
   getAllEnums,
 } = require("../generics");
+const Sequelize = require("sequelize"); // Importa la llibreria Sequelize
+
+const sequelize = new Sequelize("regira", "root", "admin", {
+  //host: 'localhost',
+  host: "localhost", //IP de la base de dades
+  dialect: "mysql", // connectem a mysql
+  port: 3306,
+});
 
 //AUTHENTICATION
 //AUTHENTICATION
@@ -201,8 +209,6 @@ router.put("/tarea", checkToken, async (req, res, next) => {
         const proyecto = await Proyecto.findByPk(proyectos_id);
         const idTarea = await Tarea.findByPk(id);
 
-
-
         if (!user || !proyecto || !idTarea) {
           return res
             .status(500)
@@ -231,62 +237,105 @@ router.put("/tarea", checkToken, async (req, res, next) => {
   }
 });
 
-router.put('/tarea/:id/proyecto/:idproyecto', checkToken, async (req, res, next) => {
-  try{
-    const { body } = req;
-    const {id, idproyecto } = req.params
+router.put(
+  "/tarea/:id/proyecto/:idproyecto",
+  checkToken,
+  async (req, res, next) => {
+    try {
+      const { body } = req;
+      const { id, idproyecto } = req.params;
 
-    const resultado = await Promise.all(
-      body.map(async (credencial) => {
-        const {
-          usuarios_id,
-          proyectos_id,
-          tipo,
-          titulo,
-          prioridad,
-          estado,
-          author_id,
-          descripcion,
-        } = credencial;
+      const resultado = await Promise.all(
+        body.map(async (credencial) => {
+          const {
+            usuarios_id,
+            proyectos_id,
+            tipo,
+            titulo,
+            prioridad,
+            estado,
+            author_id,
+            descripcion,
+          } = credencial;
 
-        const user = await Usuario.findByPk(usuarios_id); // Cerca l'usuari pel seu ID
-        const proyecto = await Proyecto.findByPk(proyectos_id);
-        const idTarea = await Tarea.findByPk(id);
+          const user = await Usuario.findByPk(usuarios_id); // Cerca l'usuari pel seu ID
+          const proyecto = await Proyecto.findByPk(proyectos_id);
+          const idTarea = await Tarea.findByPk(id);
 
+          if (!user || !proyecto || !idTarea) {
+            return res
+              .status(500)
+              .json({ error: "El user o el proyecto no existen" }); // Retorna error 500 si no es troba l'usuari
+          }
 
+          //Tengo que hacer un update
+          const tarea = await idTarea.update({
+            tipo: tipo,
+            titulo: titulo,
+            descripcion: descripcion,
+            prioridad: prioridad,
+            estado: estado,
+            proyectos_id: proyectos_id,
+            usuarios_id: usuarios_id,
+            author_id: author_id,
+          });
 
-        if (!user || !proyecto || !idTarea) {
-          return res
-            .status(500)
-            .json({ error: "El user o el proyecto no existen" }); // Retorna error 500 si no es troba l'usuari
-        }
+          return tarea;
+        })
+      );
 
-        //Tengo que hacer un update
-        const tarea = await idTarea.update({
-          tipo: tipo,
-          titulo: titulo,
-          descripcion: descripcion,
-          prioridad: prioridad,
-          estado: estado,
-          proyectos_id: proyectos_id,
-          usuarios_id: usuarios_id,
-          author_id: author_id,
+      const allTareas = await Tarea.findAll({
+        where: { proyectos_id: idproyecto },
+      });
+
+      res.status(201).json(allTareas);
+    } catch (error) {
+      console.log({ error: error.message });
+    }
+  }
+);
+
+router.put("/tarea/:id/tags", checkToken, async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const body = req.body;
+
+    const tareas = await Tarea.findByPk(id);
+    const tareaId = tareas.id;
+
+    const tags = await Promise.all(
+      body.map(async (tag) => {
+        const resulta = await Tag.findAll({
+          where: { nombre: tag.tag },
+          raw: true,
         });
-
-        return tarea;
+        return resulta.map((tg) => tg.id);
       })
     );
-  
-    const allTareas = await Tarea.findAll({
-      where: {proyectos_id: idproyecto}
-    });
 
-    res.status(201).json(allTareas)
+    const tagsEliminate = tags.reduce((acc, curr) => acc.concat(curr), []);
 
-  } catch(error) {
-    console.log({ error: error.message });
+    const resultado = await sequelize.query(
+      `DELETE FROM tareas_has_tags WHERE tareaId = :tareaId AND tagId IN (:tagsEliminate)`,
+      {
+        replacements: { tareaId, tagsEliminate },
+        type: sequelize.QueryTypes.DELETE,
+      }
+    );
+    
+    await Promise.all(
+      tagsEliminate.map(async tag => await tareas.addTag(tag))
+    )
+
+    res.status(200).json({messgae: 'se han añadido'});
+    // await Promise.all(...tags.map(async tag =>
+    //   await tags.destroy({where: {tareaId: tareas.id, tagId: tag.id}})))
+
+    // console.log(updateTags);
+  } catch (error) {
+    res.status(404).json({ error: error.message });
   }
-})
+});
 
 //Endpoint para coger los tags de una tarea
 router.get("/tarea/:id/tags", checkToken, async (req, res, next) => {
@@ -313,15 +362,15 @@ router.get("/tarea/:id/tags", checkToken, async (req, res, next) => {
 
     //Hacer un filtrado para ver todos los tags de esa tarea
     const allTagsTarea = tagsDeTareas
-    .filter((tag) => tag.tareas_has_tags.tareaId !== id)
-    .map((t) => {
-    return { id: t.tareas_has_tags.tareaId, tag: t.nombre };
-    });
+      .filter((tag) => tag.tareas_has_tags.tareaId !== id)
+      .map((t) => {
+        return { id: t.tareas_has_tags.tareaId, tag: t.nombre };
+      });
 
     if (!tarea) {
-    return res
-     .status(500)
-     .json({ error: "No se ha encontrado una tarea con ese id" });
+      return res
+        .status(500)
+        .json({ error: "No se ha encontrado una tarea con ese id" });
     }
 
     console.log(allTagsTarea);

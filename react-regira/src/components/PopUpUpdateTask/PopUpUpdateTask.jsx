@@ -10,7 +10,7 @@ export const PopUpUpdateTask = ({
   actualTagsChecked,
   idProject,
   idUser,
-  setAllProjectTasks
+  setAllProjectTasks,
 }) => {
   const url = "http://localhost:3000/api";
   const [formStateUpdate, setFormStateUpdate] = useState({
@@ -70,12 +70,28 @@ export const PopUpUpdateTask = ({
         },
       ]),
     };
-    
-    fetch(url + "/tarea/" + popUp.idTask + "/proyecto/" + idProject , opcions)
-      .then((res) => res.json())
-      .then((data) => setAllProjectTasks(data))
-      .catch((error) => console.log(error));
+
+    const transformCheckedTasks = transformCheckTagsApi();
+
+    fetch(url + "/tarea/" + popUp.idTask + "/tags", {...opcions, body: JSON.stringify(transformCheckedTasks)})
+      .then((res) => res.json()).then(tags => console.log(tags))
+      .then((data) => {
+        if (data) {
+          fetch(
+            url + "/tarea/" + popUp.idTask + "/proyecto/" + idProject,
+            opcions
+          )
+            .then((res) => res.json())
+            .then((data) => setAllProjectTasks(data))
+            .catch((error) => console.log(error));
+        }
+      }).catch(error => console.log(error))
   };
+
+  //fn to TransformAllTagsChecked
+  const transformCheckTagsApi = () => {
+    return checkTag.filter(tags => tags.isChecked)
+  }
 
   return (
     <div className="z-50 flex justify-center items-center backdrop-blur-sm absolute top-0 left-0 w-full h-full">
