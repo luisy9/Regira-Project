@@ -27,10 +27,12 @@ const Item = ({
       credentials: "include",
     };
 
+    console.log(item.id)
+
     fetch(url + "users/" + item.usuarios_id, opcions)
       .then((res) => res.json())
       .then((email) => setEmailUser(email.email))
-      
+
       //Llamada a la api para cojer los tags de cada elemento
       .then(
         fetch(url + "tarea/" + item.id + "/tags", opcions)
@@ -41,6 +43,10 @@ const Item = ({
           .catch((errorData) => console.log(errorData))
       )
       .catch((error) => console.log(error));
+  }, [item]);
+
+  useEffect(() => {
+
   }, [item]);
 
   //Drag
@@ -118,8 +124,7 @@ const Item = ({
             return (
               <>
                 <p className="border-2 rounded-md px-1 text-bold">
-                  #
-                  {e?.id === item.id ? e?.tag : <></>}
+                  #{e?.id === item.id ? e?.tag : <></>}
                 </p>
               </>
             );
@@ -216,7 +221,6 @@ export const DragDrop = ({
   //Update DragAnDrope cuando movemos una tarea
   useEffect(() => {
     if (task.length > 0) {
-      //console.log(task)
       const opcions = {
         method: "PUT",
         credentials: "include",
@@ -230,9 +234,8 @@ export const DragDrop = ({
         .then((res) => res.json())
         .then((data) => setItems(data))
         .catch((error) => console.log(error));
-      //setValueInput("");
     }
-  }, [task]); 
+  }, [task]);
 
   const onChangeTextArea = (value) => {
     setValueInput(value);

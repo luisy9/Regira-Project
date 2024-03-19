@@ -148,21 +148,6 @@ router.get("/tarea/author/:id", async (req, res, next) => {
   res.status(201).json(authorId);
 });
 
-//Todas las tareas de un proyecto en especifico
-router.get("/tarea/proyecto/:id", async (req, res, next) => {
-  const TareasProyecto = await Tarea.findAll({
-    where: { proyectos_id: req.params.id },
-  });
-
-  if (!TareasProyecto) {
-    return res
-      .status(404)
-      .json({ error: "El proyecto no tiene ninguna tarea" });
-  }
-
-  res.status(201).json(TareasProyecto);
-});
-
 //Crear una nueva tarea dentro de el proyecto, en el drag and drope
 router.post("/tarea/proyecto/:id", checkToken, async (req, res, next) => {
   try {
@@ -295,7 +280,7 @@ router.put(
   }
 );
 
-router.put("/tarea/:id/tags", checkToken, async (req, res, next) => {
+const updateTagsTasks = async (req, res, next) => {
   try {
     const { id } = req.params;
     const body = req.body;
@@ -303,8 +288,33 @@ router.put("/tarea/:id/tags", checkToken, async (req, res, next) => {
     const tareas = await Tarea.findByPk(id);
     const tareaId = tareas.id;
 
+    const allTagsEliminate = await Promise.all(
+      body.map(async (tags) => {
+        const resulta = await Tag.findAll({
+          where: { nombre: tags.tag },
+          raw: true,
+        });
+
+        return resulta.map((tag) => tag.id);
+      })
+    );
+
+    const tagsEliminateAll = allTagsEliminate.reduce(
+      (acc, curr) => acc.concat(curr),
+      []
+    );
+
+    await sequelize.query(
+      `DELETE FROM tareas_has_tags WHERE tareaId = :tareaId AND tagId IN (:tagsEliminateAll)`,
+      {
+        replacements: { tareaId, tagsEliminateAll },
+        type: sequelize.QueryTypes.DELETE,
+      }
+    );
+
+    const filterTagsToAdd = body.filter(tag => tag.isChecked == true)
     const tags = await Promise.all(
-      body.map(async (tag) => {
+      filterTagsToAdd.map(async (tag) => {
         const resulta = await Tag.findAll({
           where: { nombre: tag.tag },
           raw: true,
@@ -314,27 +324,48 @@ router.put("/tarea/:id/tags", checkToken, async (req, res, next) => {
     );
 
     const tagsEliminate = tags.reduce((acc, curr) => acc.concat(curr), []);
-
-    const resultado = await sequelize.query(
-      `DELETE FROM tareas_has_tags WHERE tareaId = :tareaId AND tagId IN (:tagsEliminate)`,
-      {
-        replacements: { tareaId, tagsEliminate },
-        type: sequelize.QueryTypes.DELETE,
-      }
-    );
-    
     await Promise.all(
       tagsEliminate.map(async tag => await tareas.addTag(tag))
     )
 
-    res.status(200).json({messgae: 'se han añadido'});
-    // await Promise.all(...tags.map(async tag =>
-    //   await tags.destroy({where: {tareaId: tareas.id, tagId: tag.id}})))
-
-    // console.log(updateTags);
+    next();
   } catch (error) {
     res.status(404).json({ error: error.message });
   }
+};
+
+router.put(
+  "/tarea/:id/tags/project/:idProject",
+  checkToken,
+  updateTagsTasks,
+  async (req, res, next) => {
+    const TareasProyecto = await Tarea.findAll({
+      where: { proyectos_id: req.params.idProject },
+    });
+
+    if (!TareasProyecto) {
+      return res
+        .status(404)
+        .json({ error: "El proyecto no tiene ninguna tarea" });
+    }
+
+    res.status(201).json(TareasProyecto);
+  }
+);
+
+//Todas las tareas de un proyecto en especifico
+router.get("/tarea/proyecto/:id", async (req, res, next) => {
+  const TareasProyecto = await Tarea.findAll({
+    where: { proyectos_id: req.params.id },
+  });
+
+  if (!TareasProyecto) {
+    return res
+      .status(404)
+      .json({ error: "El proyecto no tiene ninguna tarea" });
+  }
+
+  res.status(201).json(TareasProyecto);
 });
 
 //Endpoint para coger los tags de una tarea
@@ -353,12 +384,8 @@ router.get("/tarea/:id/tags", checkToken, async (req, res, next) => {
       include: Tag,
     });
 
-    //console.log(tareaConTags);
-
     //Coger los tags
     const tagsDeTareas = tareaConTags.dataValues.tags;
-
-    //console.log(tagsDeTareas);
 
     //Hacer un filtrado para ver todos los tags de esa tarea
     const allTagsTarea = tagsDeTareas
@@ -374,7 +401,6 @@ router.get("/tarea/:id/tags", checkToken, async (req, res, next) => {
     }
 
     console.log(allTagsTarea);
-
     res.status(200).json(allTagsTarea);
   } catch (error) {
     console.log({ error: error.message });

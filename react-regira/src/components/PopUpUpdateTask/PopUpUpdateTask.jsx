@@ -71,12 +71,15 @@ export const PopUpUpdateTask = ({
       ]),
     };
 
-    const transformCheckedTasks = transformCheckTagsApi();
+    // const transformCheckedTasks = checkTag.filter((tags) => tags.isChecked);
 
-    fetch(url + "/tarea/" + popUp.idTask + "/tags", {...opcions, body: JSON.stringify(transformCheckedTasks)})
-      .then((res) => res.json()).then(tags => console.log(tags))
-      .then((data) => {
-        if (data) {
+    fetch(url + "/tarea/" + popUp.idTask + "/tags/project/" + idProject, {
+      ...opcions,
+      body: JSON.stringify(checkTag),
+    })
+      .then((res) => res.json())
+      .then((tags) => {
+        if (tags) {
           fetch(
             url + "/tarea/" + popUp.idTask + "/proyecto/" + idProject,
             opcions
@@ -85,13 +88,15 @@ export const PopUpUpdateTask = ({
             .then((data) => setAllProjectTasks(data))
             .catch((error) => console.log(error));
         }
-      }).catch(error => console.log(error))
+      })
+      .catch((error) => console.log(error));
   };
 
   //fn to TransformAllTagsChecked
-  const transformCheckTagsApi = () => {
-    return checkTag.filter(tags => tags.isChecked)
-  }
+  // const transformCheckTagsApi = () => {
+  //   const tagsFilter = checkTag.filter((tags) => tags.isChecked == false);
+  //   return tagsFilter
+  // };
 
   return (
     <div className="z-50 flex justify-center items-center backdrop-blur-sm absolute top-0 left-0 w-full h-full">
