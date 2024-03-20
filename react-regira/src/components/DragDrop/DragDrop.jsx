@@ -116,11 +116,11 @@ const Item = ({
         <div className="flex gap-2">
           {tag?.map((e) => {
             return (
-              <>
+              <div className="">
                 <p className="border-2 rounded-md px-1 text-bold">
                   #{e?.id === item.id ? e.tag : <></>}
                 </p>
-              </>
+              </div>
             );
           })}
         </div>
@@ -195,7 +195,7 @@ export const DragDrop = ({
       fetch(url + "tarea/" + idTarea?.id + "/enum")
         .then((res) => res.json())
         .then((data) => setEnumsEstado(data.enumEstado))
-        .catch((error) => console.log(error));
+        .catch((error) => console.log({error: error.message}));
 
       setTask([...allProjectTasks]);
     }
@@ -243,7 +243,7 @@ export const DragDrop = ({
     <DndProvider backend={HTML5Backend}>
       <div className="w-full flex gap-5">
         {enumsTypes.enumEstado?.map((caixa) => (
-          <div className="w-full" key={caixa}>
+          <div className="w-full">
             <Box key={caixa} title={caixa} mouItem={mouItem}>
               {items.length > 0
                 ? items

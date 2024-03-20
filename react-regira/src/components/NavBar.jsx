@@ -42,13 +42,7 @@ export const NavBar = () => {
 
                     <div className="flex items-center text-lg flex-grow justify-between h-10">
                         <div className="">
-                            <NavLink to='/'><button className="mx-5 hover:bg-[#bdbec2] hover:border-none rounded-md px-5"><a href="" className="text-[#1E77FF]">Inicio</a></button></NavLink>
-                            <button className="mx-5 hover:bg-[#bdbec2] hover:border-none rounded-md px-5"><a href="" className=" text-[#1E77FF]">Proyectos</a></button>
-                            <NavLink to='/newProject'><button className="mx-5 hover:bg-[#bdbec2] hover:border-none rounded-md px-5"><a href="" className="text-[#1E77FF]">New Project</a></button></NavLink>
-                            <NavLink to='/newTarea'><button className="mx-5 hover:bg-[#bdbec2] hover:border-none rounded-md px-5"><a href="" className="text-[#1E77FF]">New Tarea</a></button></NavLink>
-                            <NavLink to='/newTag'><button className="mx-5 hover:bg-[#bdbec2] hover:border-none rounded-md px-5"><a href="" className="text-[#1E77FF]">New Tag</a></button></NavLink>
                         </div>
-                        <p>{logued}</p>
                         <div className="">
                             {
                                 logued ? <DropDown handleLogout={handleLogout} />
