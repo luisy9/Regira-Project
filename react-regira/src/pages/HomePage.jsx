@@ -2,6 +2,7 @@ import { useEffect, useContext, useState } from "react";
 import { contextRegira } from "../context";
 import TargetProject from "../components/TargetProject/TargetProject";
 import AddItemBox from "../components/AddItemsBox/AddItemBox";
+import HandlersRegira from "../components/handlersRegira/HandlersRegira";
 
 export const HomePage = () => {
   const url = "http://localhost:3000/api";
@@ -34,9 +35,12 @@ export const HomePage = () => {
   }
 
   return (
-    <div className="w-full pt-10">
-      <div className="mb-12">
+    <div className="w-full pt-5">
+      <div className="mb-10">
         <AddItemBox />
+      </div>
+      <div className="mb-10">
+        <HandlersRegira />
       </div>
       <h1 className="text-3xl pb-3 font-semibold">Tu Trabajo</h1>
       <hr className="max-w-full max-auto" />

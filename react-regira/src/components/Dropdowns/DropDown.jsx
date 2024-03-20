@@ -59,7 +59,7 @@ export const DropDown = ({ handleLogout }) => {
                                 <button
                                     type="submit"
                                     className={classNames(
-                                        active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
+                                        active ? 'bg-gray-100 text-red-500' : 'text-red-500',
                                         'block w-full px-4 py-2 text-left text-sm'
                                     )}
                                     onClick={() => handleLogout()}
