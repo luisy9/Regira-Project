@@ -15,7 +15,7 @@ export const PopUpNewTask = ({
   enumsTypes,
 }) => {
   return (
-    <div className="z-50 flex justify-center items-center absolute top-0 left-0 w-full h-full backdrop-blur-sm">
+    <div className="z-50 flex justify-center items-center absolute top-0 left-0 w-full h-full backdrop-blur-sm backdrop-brightness-100">
       <div className="flex flex-col justify-end border border-[#0054CD] bg-white w-3/6 rounded-md px-5 py-5">
         <div className="flex justify-between">
           <h1 className="text-4xl text-bold">Nueva Tarea</h1>

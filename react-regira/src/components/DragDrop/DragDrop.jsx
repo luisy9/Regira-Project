@@ -16,6 +16,7 @@ const Item = ({
   setItems,
   onDeleteTask,
   onUpdateTask,
+  showModalComments
 }) => {
   const [emailUser, setEmailUser] = useState("");
   const [tag, setTag] = useState([]);
@@ -83,15 +84,35 @@ const Item = ({
         className={`border shadow-lg px-3 my-4 w-full h-44 active:border-2 active:border-[#2681FF] text-black rounded-md cursor-grab`}
         style={{ opacity: isDragging ? 0.5 : 1 }}
       >
-        {/* AAAA{tag[0]?.map(e => <p>{e.tag}</p>)} */}
-        <div className="flex justify-between items-center">
+        <div className="flex">
           <h1 className="text-bold text-3xl">{item.tipo}</h1>
-          <div className="" onClick={() => onUpdateTask(item.id)}>
-            <img
-              src="/editar.png"
-              alt="edit"
-              className="w-6 h-6 cursor-pointer"
-            />
+          <div className="flex items-center justify-end gap-3 w-full">
+            <div className="" onClick={() => onUpdateTask(item.id)}>
+              <img
+                src="/editar.png"
+                alt="edit"
+                className="w-6 h-6 cursor-pointer"
+              />
+            </div>
+            <div className="cursor-pointer" onClick={() => showModalComments(item.id)}>
+              <svg
+                class="w-7 h-7 text-gray-800 dark:text-black"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="1"
+                  d="m10.827 5.465-.435-2.324m.435 2.324a5.338 5.338 0 0 1 6.033 4.333l.331 1.769c.44 2.345 2.383 2.588 2.6 3.761.11.586.22 1.171-.31 1.271l-12.7 2.377c-.529.099-.639-.488-.749-1.074C5.813 16.73 7.538 15.8 7.1 13.455c-.219-1.169.218 1.162-.33-1.769a5.338 5.338 0 0 1 4.058-6.221Zm-7.046 4.41c.143-1.877.822-3.461 2.086-4.856m2.646 13.633a3.472 3.472 0 0 0 6.728-.777l.09-.5-6.818 1.277Z"
+                />
+              </svg>
+            </div>
           </div>
         </div>
         <p className="text-xl">{item.titulo}</p>
@@ -181,6 +202,7 @@ export const DragDrop = ({
   onDeleteTask,
   onUpdateTask,
   enumsTypes,
+  showModalComments
 }) => {
   const [items, setItems] = useState([...allProjectTasks]);
   const [task, setTask] = useState([]);
@@ -195,7 +217,7 @@ export const DragDrop = ({
       fetch(url + "tarea/" + idTarea?.id + "/enum")
         .then((res) => res.json())
         .then((data) => setEnumsEstado(data.enumEstado))
-        .catch((error) => console.log({error: error.message}));
+        .catch((error) => console.log({ error: error.message }));
 
       setTask([...allProjectTasks]);
     }
@@ -261,6 +283,7 @@ export const DragDrop = ({
                           setItems={setItems}
                           onDeleteTask={onDeleteTask}
                           onUpdateTask={onUpdateTask}
+                          showModalComments={showModalComments}
                         />
                       </>
                     ))

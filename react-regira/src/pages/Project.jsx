@@ -4,6 +4,7 @@ import { contextRegira } from "../context";
 import { DragDrop } from "../components";
 import PopUpNewTask from "../components/PopUpAddTask/PopUpNewTask";
 import PopUpUpdateTask from "../components/PopUpUpdateTask/PopUpUpdateTask";
+import PopUpComments from "../components/PopUpComments/PopUpComments";
 
 export const Project = () => {
   const url = "http://localhost:3000/api";
@@ -32,6 +33,10 @@ export const Project = () => {
       updateTask: false,
       idTask: null,
     },
+    {
+      viewComments: false,
+      idTask: null
+    }
   ]);
 
   useEffect(() => {
@@ -113,7 +118,7 @@ export const Project = () => {
           .then((res) => res.json())
           .then((data) => {
             setAllProjectTasks((updatedItems) => [...updatedItems, data]);
-              setPopUp({ ...popUp, createTask: false });
+            setPopUp({ ...popUp, createTask: false });
 
             fetch(url + "/tag/tarea/" + data.id, {
               ...opcions,
@@ -214,6 +219,11 @@ export const Project = () => {
       .catch((error) => console.log(error));
   };
 
+  //SHOW MODAL COMMENTS
+  const showModalComments = (id) => {
+    setPopUp({...popUp, viewComments: true, idTask: id});
+  };
+
   useEffect(() => {
     if (popUp.updateTask) {
       const opcions = {
@@ -241,7 +251,7 @@ export const Project = () => {
   return (
     <>
       <div className="w-full">
-        <div className="flex justify-end pb-5">
+        <div className={`flex justify-end pb-5 ${popUp.updateTask || popUp.createTask || popUp.viewComments ? `z-50 w-full backdrop-blur-sm backdrop-brightness-100` : ``}`}>
           <button
             className="border rounded-md text-lg px-5 py-2 bg-[#0054CD] text-white"
             onClick={openModal}
@@ -249,6 +259,12 @@ export const Project = () => {
             Crear tarea
           </button>
         </div>
+        {popUp.viewComments ? (
+          <div className="">
+            <PopUpComments setPopUp={setPopUp} popUp={popUp}/>
+          </div>
+        ) : null}
+
         {popUp.updateTask ? (
           <PopUpUpdateTask
             closeTag={setPopUp}
@@ -289,6 +305,7 @@ export const Project = () => {
               onUpdateTask={onUpdateTask}
               enumsTypes={enumsTypes}
               setAllProjectTasks={setActualTagsChecked}
+              showModalComments={showModalComments}
             />
           </div>
         }
