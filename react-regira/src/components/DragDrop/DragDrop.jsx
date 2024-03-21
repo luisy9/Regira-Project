@@ -10,13 +10,10 @@ const Item = ({
   id,
   item,
   caixa,
-  setTask,
   task,
-  items,
-  setItems,
   onDeleteTask,
   onUpdateTask,
-  showModalComments
+  showModalComments,
 }) => {
   const [emailUser, setEmailUser] = useState("");
   const [tag, setTag] = useState([]);
@@ -94,7 +91,10 @@ const Item = ({
                 className="w-6 h-6 cursor-pointer"
               />
             </div>
-            <div className="cursor-pointer" onClick={() => showModalComments(item.id)}>
+            <div
+              className="cursor-pointer"
+              onClick={() => showModalComments(item.id)}
+            >
               <svg
                 class="w-7 h-7 text-gray-800 dark:text-black"
                 aria-hidden="true"
@@ -150,7 +150,7 @@ const Item = ({
   );
 };
 
-const Box = ({ children, title, mouItem }) => {
+const Box = ({ children, title, mouItem, openModal }) => {
   const [{ isOver }, drop] = useDrop({
     accept: ItemType,
     drop: (item, monitor) => {
@@ -191,6 +191,11 @@ const Box = ({ children, title, mouItem }) => {
           )}
         </h2>
         {children}
+        {title === "backlog" ? (
+          <div className="cursor-pointer border rounded-md flex justify-center h-16 items-center bg-[#2581FF] hover:bg-[#0354CD]" onClick={openModal}>
+            <div className="text-3xl text-white">+</div>
+          </div>
+        ) : null}
       </div>
     </div>
   );
@@ -198,17 +203,16 @@ const Box = ({ children, title, mouItem }) => {
 
 export const DragDrop = ({
   allProjectTasks,
-  id,
   onDeleteTask,
   onUpdateTask,
   enumsTypes,
-  showModalComments
+  showModalComments,
+  openModal
 }) => {
   const [items, setItems] = useState([...allProjectTasks]);
   const [task, setTask] = useState([]);
   const [enumsEstado, setEnumsEstado] = useState([]);
   const [idTarea, setIdTarea] = useState(null);
-  const [valueInput, setValueInput] = useState("");
 
   useEffect(() => {
     if (allProjectTasks.length > 0) {
@@ -253,20 +257,12 @@ export const DragDrop = ({
     }
   }, [task]);
 
-  const onChangeTextArea = (value) => {
-    setValueInput(value);
-  };
-
-  const addTask = () => {
-    setTask({ ...task, descripcion: valueInput });
-  };
-
   return (
     <DndProvider backend={HTML5Backend}>
       <div className="w-full flex gap-5">
         {enumsTypes.enumEstado?.map((caixa) => (
           <div className="w-full">
-            <Box key={caixa} title={caixa} mouItem={mouItem}>
+            <Box key={caixa} title={caixa} mouItem={mouItem} openModal={openModal}>
               {items.length > 0
                 ? items
                     .filter((item) => item.estado === caixa)

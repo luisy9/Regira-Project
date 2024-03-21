@@ -16,7 +16,7 @@ export const NewProject = () => {
 
   const onSubmitForm = () => {
     event.preventDefault();
-
+    
     const usuarios_id = logued;
     setData({ ...data, usuarios_id });
     const credentials = { data };

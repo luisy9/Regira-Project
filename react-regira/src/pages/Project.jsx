@@ -250,15 +250,7 @@ export const Project = () => {
 
   return (
     <>
-      <div className="w-full">
-        <div className={`flex justify-end pb-5 ${popUp.updateTask || popUp.createTask || popUp.viewComments ? `z-50 w-full backdrop-blur-sm backdrop-brightness-100` : ``}`}>
-          <button
-            className="border rounded-md text-lg px-5 py-2 bg-[#0054CD] text-white"
-            onClick={openModal}
-          >
-            Crear tarea
-          </button>
-        </div>
+      <div className="w-full pb-5">
         {popUp.viewComments ? (
           <div className="">
             <PopUpComments setPopUp={setPopUp} popUp={popUp}/>
@@ -297,8 +289,9 @@ export const Project = () => {
           />
         ) : null}
         {
-          <div className="flex justify-start h-4/5">
+          <div className="flex justify-start h-4/5 pt-5">
             <DragDrop
+              openModal={openModal}
               id={id}
               allProjectTasks={allProjectTasks}
               onDeleteTask={onDeleteTask}
