@@ -14,6 +14,7 @@ const Item = ({
   onDeleteTask,
   onUpdateTask,
   showModalComments,
+  showModalAddComments
 }) => {
   const [emailUser, setEmailUser] = useState("");
   const [tag, setTag] = useState([]);
@@ -84,12 +85,24 @@ const Item = ({
         <div className="flex">
           <h1 className="text-bold text-3xl">{item.tipo}</h1>
           <div className="flex items-center justify-end gap-3 w-full">
-            <div className="" onClick={() => onUpdateTask(item.id)}>
-              <img
-                src="/editar.png"
-                alt="edit"
-                className="w-6 h-6 cursor-pointer"
-              />
+            <div className="cursor-pointer" onClick={() => onUpdateTask(item.id)}>
+              <svg
+                class="w-7 h-7 text-gray-800"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="1"
+                  d="M18 5V4a1 1 0 0 0-1-1H8.914a1 1 0 0 0-.707.293L4.293 7.207A1 1 0 0 0 4 7.914V20a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-5M9 3v4a1 1 0 0 1-1 1H4m11.383.772 2.745 2.746m1.215-3.906a2.089 2.089 0 0 1 0 2.953l-6.65 6.646L9 17.95l.739-3.692 6.646-6.646a2.087 2.087 0 0 1 2.958 0Z"
+                />
+              </svg>
             </div>
             <div
               className="cursor-pointer"
@@ -110,6 +123,25 @@ const Item = ({
                   stroke-linejoin="round"
                   stroke-width="1"
                   d="m10.827 5.465-.435-2.324m.435 2.324a5.338 5.338 0 0 1 6.033 4.333l.331 1.769c.44 2.345 2.383 2.588 2.6 3.761.11.586.22 1.171-.31 1.271l-12.7 2.377c-.529.099-.639-.488-.749-1.074C5.813 16.73 7.538 15.8 7.1 13.455c-.219-1.169.218 1.162-.33-1.769a5.338 5.338 0 0 1 4.058-6.221Zm-7.046 4.41c.143-1.877.822-3.461 2.086-4.856m2.646 13.633a3.472 3.472 0 0 0 6.728-.777l.09-.5-6.818 1.277Z"
+                />
+              </svg>
+            </div>
+            <div className="cursor-pointer" onClick={() => showModalAddComments(item.id)}>
+              <svg
+                class="w-7 h-7 text-gray-800"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="1"
+                  d="M7.556 8.5h8m-8 3.5H12m7.111-7H4.89a.896.896 0 0 0-.629.256.868.868 0 0 0-.26.619v9.25c0 .232.094.455.26.619A.896.896 0 0 0 4.89 16H9l3 4 3-4h4.111a.896.896 0 0 0 .629-.256.868.868 0 0 0 .26-.619v-9.25a.868.868 0 0 0-.26-.619.896.896 0 0 0-.63-.256Z"
                 />
               </svg>
             </div>
@@ -192,7 +224,10 @@ const Box = ({ children, title, mouItem, openModal }) => {
         </h2>
         {children}
         {title === "backlog" ? (
-          <div className="cursor-pointer border rounded-md flex justify-center h-16 items-center bg-[#2581FF] hover:bg-[#0354CD]" onClick={openModal}>
+          <div
+            className="cursor-pointer border rounded-md flex justify-center h-16 items-center bg-[#2581FF] hover:bg-[#0354CD]"
+            onClick={openModal}
+          >
             <div className="text-3xl text-white">+</div>
           </div>
         ) : null}
@@ -207,7 +242,8 @@ export const DragDrop = ({
   onUpdateTask,
   enumsTypes,
   showModalComments,
-  openModal
+  openModal,
+  showModalAddComments
 }) => {
   const [items, setItems] = useState([...allProjectTasks]);
   const [task, setTask] = useState([]);
@@ -262,7 +298,12 @@ export const DragDrop = ({
       <div className="w-full flex gap-5">
         {enumsTypes.enumEstado?.map((caixa) => (
           <div className="w-full">
-            <Box key={caixa} title={caixa} mouItem={mouItem} openModal={openModal}>
+            <Box
+              key={caixa}
+              title={caixa}
+              mouItem={mouItem}
+              openModal={openModal}
+            >
               {items.length > 0
                 ? items
                     .filter((item) => item.estado === caixa)
@@ -280,6 +321,7 @@ export const DragDrop = ({
                           onDeleteTask={onDeleteTask}
                           onUpdateTask={onUpdateTask}
                           showModalComments={showModalComments}
+                          showModalAddComments={showModalAddComments}
                         />
                       </>
                     ))

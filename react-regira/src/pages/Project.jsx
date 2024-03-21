@@ -5,6 +5,7 @@ import { DragDrop } from "../components";
 import PopUpNewTask from "../components/PopUpAddTask/PopUpNewTask";
 import PopUpUpdateTask from "../components/PopUpUpdateTask/PopUpUpdateTask";
 import PopUpComments from "../components/PopUpComments/PopUpComments";
+import ViewComments from "../components/ViewComments/ViewComments";
 
 export const Project = () => {
   const url = "http://localhost:3000/api";
@@ -35,8 +36,12 @@ export const Project = () => {
     },
     {
       viewComments: false,
-      idTask: null
-    }
+      idTask: null,
+    },
+    {
+      addComment: false,
+      idTask: null,
+    },
   ]);
 
   useEffect(() => {
@@ -221,7 +226,12 @@ export const Project = () => {
 
   //SHOW MODAL COMMENTS
   const showModalComments = (id) => {
-    setPopUp({...popUp, viewComments: true, idTask: id});
+    setPopUp({ ...popUp, viewComments: true, idTask: id });
+  };
+
+  //SHOW MODAL ADD COMMENTS
+  const showModalAddComments = (id) => {
+    setPopUp({ ...popUp, addComment: true, idTask: id });
   };
 
   useEffect(() => {
@@ -253,7 +263,13 @@ export const Project = () => {
       <div className="w-full pb-5">
         {popUp.viewComments ? (
           <div className="">
-            <PopUpComments setPopUp={setPopUp} popUp={popUp}/>
+            <PopUpComments setPopUp={setPopUp} popUp={popUp} />
+          </div>
+        ) : null}
+
+        {popUp.addComment ? (
+          <div className="">
+            <ViewComments setPopUp={setPopUp} popUp={popUp} />
           </div>
         ) : null}
 
@@ -299,6 +315,7 @@ export const Project = () => {
               enumsTypes={enumsTypes}
               setAllProjectTasks={setActualTagsChecked}
               showModalComments={showModalComments}
+              showModalAddComments={showModalAddComments}
             />
           </div>
         }

@@ -1,7 +1,7 @@
 export const HandlersRegira = () => {
   return (
     <div className="flex justify-between">
-        <div className="border rounded-md w-96 h-36 flex items-center justify-center cursor-pointer hover:bg-sky-100 hover:border-[#2581FF]">
+        <div className="border rounded-md w-80 h-36 flex items-center justify-center cursor-pointer hover:bg-sky-100 hover:border-[#2581FF]">
           <div className="">
             <div className="border rounded-xl bg-[#2581FF] px-5 py-5 flex justify-center">
               <svg
@@ -23,7 +23,7 @@ export const HandlersRegira = () => {
             <h1 className="pt-1 text-bold">Add project</h1>
           </div>
         </div>
-        <div className="border rounded-md w-96 h-36 flex items-center justify-center cursor-pointer hover:bg-sky-100 hover:border-[#2581FF]">
+        <div className="border rounded-md w-80 h-36 flex items-center justify-center cursor-pointer hover:bg-sky-100 hover:border-[#2581FF]">
           <div className="">
             <div className="border rounded-xl bg-[#2581FF] px-5 py-5 flex justify-center">
               <svg
@@ -47,7 +47,7 @@ export const HandlersRegira = () => {
             <h1 className="pt-1 text-bold">Edit project</h1>
           </div>
         </div>
-        <div className="border rounded-md w-96 h-36 flex items-center justify-center cursor-pointer hover:bg-sky-100 hover:border-[#2581FF]">
+        <div className="border rounded-md w-80 h-36 flex items-center justify-center cursor-pointer hover:bg-sky-100 hover:border-[#2581FF]">
           <div className="">
             <div className="border rounded-xl bg-[#2581FF] px-5 py-5 flex justify-center">
               <svg
