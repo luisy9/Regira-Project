@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { DndProvider, useDrag, useDrop } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import DeleteButton from "../deleteButton/DeleteButton";
+import { useCommentsTest } from "../../hook/useCommentsText";
 
 const ItemType = "ITEM";
 const url = "http://localhost:3000/api/";
@@ -14,10 +15,12 @@ const Item = ({
   onDeleteTask,
   onUpdateTask,
   showModalComments,
-  showModalAddComments
+  showModalAddComments,
 }) => {
   const [emailUser, setEmailUser] = useState("");
   const [tag, setTag] = useState([]);
+  const [comment, setComment] = useState([]);
+  // const { setCommentTask } = useCommentsTest();
 
   useEffect(() => {
     const opcions = {
@@ -38,6 +41,11 @@ const Item = ({
           })
           .catch((errorData) => console.log(errorData))
       )
+      .catch((error) => console.log(error));
+
+    fetch(url + `/comment/tarea/${item.id}`, opcions)
+      .then((res) => res.json())
+      .then((comment) => setComment(comment))
       .catch((error) => console.log(error));
   }, [item]);
 
@@ -85,7 +93,10 @@ const Item = ({
         <div className="flex">
           <h1 className="text-bold text-3xl">{item.tipo}</h1>
           <div className="flex items-center justify-end gap-3 w-full">
-            <div className="cursor-pointer" onClick={() => onUpdateTask(item.id)}>
+            <div
+              className="cursor-pointer"
+              onClick={() => onUpdateTask(item.id)}
+            >
               <svg
                 class="w-7 h-7 text-gray-800"
                 aria-hidden="true"
@@ -105,9 +116,19 @@ const Item = ({
               </svg>
             </div>
             <div
-              className="cursor-pointer"
+              className="cursor-pointer flex"
               onClick={() => showModalComments(item.id)}
             >
+              <div
+                className="bg-green-500 border-none rounded-full px-1 absolute w-fit text-xs"
+              >
+                {comment
+                  .map((e) => e.tareas_id === item.id)
+                  .reduce(
+                    (accumularor, currentValue) => accumularor + currentValue,
+                    0
+                  )}
+              </div>
               <svg
                 class="w-7 h-7 text-gray-800 dark:text-black"
                 aria-hidden="true"
@@ -126,7 +147,10 @@ const Item = ({
                 />
               </svg>
             </div>
-            <div className="cursor-pointer" onClick={() => showModalAddComments(item.id)}>
+            <div
+              className="cursor-pointer"
+              onClick={() => showModalAddComments(item.id)}
+            >
               <svg
                 class="w-7 h-7 text-gray-800"
                 aria-hidden="true"
@@ -243,7 +267,7 @@ export const DragDrop = ({
   enumsTypes,
   showModalComments,
   openModal,
-  showModalAddComments
+  showModalAddComments,
 }) => {
   const [items, setItems] = useState([...allProjectTasks]);
   const [task, setTask] = useState([]);

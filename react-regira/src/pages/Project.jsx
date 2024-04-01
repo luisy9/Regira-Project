@@ -6,6 +6,7 @@ import PopUpNewTask from "../components/PopUpAddTask/PopUpNewTask";
 import PopUpUpdateTask from "../components/PopUpUpdateTask/PopUpUpdateTask";
 import PopUpComments from "../components/PopUpComments/PopUpComments";
 import ViewComments from "../components/ViewComments/ViewComments";
+import useCommentsTest from "../hook/useCommentsText";
 
 export const Project = () => {
   const url = "http://localhost:3000/api";
@@ -18,6 +19,7 @@ export const Project = () => {
   const [addTag, setAddTag] = useState([]);
   const [taskUpdate, setTaskUpdate] = useState([]);
   const [enumsTypes, setEnumsTypes] = useState([]);
+  const {commentTask} = useCommentsTest();
 
   const [formState, setFormState] = useState({
     tipo: "",
@@ -43,6 +45,10 @@ export const Project = () => {
       idTask: null,
     },
   ]);
+
+  useEffect(() => {
+    console.log(commentTask, 'hola')
+  }, [commentTask])
 
   useEffect(() => {
     if (!logued) {

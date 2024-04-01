@@ -399,8 +399,6 @@ router.get("/tarea/:id/tags", checkToken, async (req, res, next) => {
         .status(500)
         .json({ error: "No se ha encontrado una tarea con ese id" });
     }
-
-    console.log(allTagsTarea);
     res.status(200).json(allTagsTarea);
   } catch (error) {
     console.log({ error: error.message });

@@ -73,7 +73,6 @@ router.post('/tag', checkToken, async (req, res, next) => {
 
 //Endpoint para añadir una tarea con un tag en la tabla intermedia
 router.post('/tag/tarea/:tareaId', async (req, res, next) => {
-  console.log(req.body);
   try {
     const { tareaId } = req.params;
     const { finalTags } = req.body;
@@ -120,7 +119,6 @@ router.post('/tag/user/:id' , async (req, res, next) => {
   try {
     const { nombre } = req.body;
     const id = req.params.id;
-    console.log(id)
 
     const user = await Usuario.findByPk(id) // Cerca l'usuari pel seu ID
     if (!user) {

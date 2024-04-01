@@ -93,7 +93,6 @@ router.post('/login', async (req, res) => {
 
 //Enpoint para que se registre el usuario
 router.post('/register', async (req, res) => {
-  console.log(req.body);
   const { email, nombre, password } = req.body;
 
   try {

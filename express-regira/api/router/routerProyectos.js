@@ -80,7 +80,6 @@ router.delete(
 router.post("/proyecto", async (req, res, next) => {
   try {
     const { nombre, descripcion, active, usuarios_id } = req.body;
-    console.log(req.body)
 
     const user = await Usuario.findByPk(usuarios_id); // Cerca l'usuari pel seu ID
     if (!user) {
