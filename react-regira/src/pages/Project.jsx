@@ -234,6 +234,28 @@ export const Project = () => {
     setPopUp({ ...popUp, addComment: true, idTask: id });
   };
 
+  //Add Comments
+  const addComments = (idTarea, comment) => {
+    event.preventDefault();
+
+    const opcions = {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      
+      body: JSON.stringify({
+        comment: comment,
+      })
+    };
+    //Llamada a la api para añadir el comentario
+    fetch(url + `/comment/${idTarea}/user/${logued}/project/${id}`, opcions)
+      .then((res) => res.json())
+      .then((data) => console.log(data))
+      .catch((error) => console.log(error));
+  };
+
   useEffect(() => {
     if (popUp.updateTask) {
       const opcions = {
@@ -269,7 +291,11 @@ export const Project = () => {
 
         {popUp.addComment ? (
           <div className="">
-            <ViewComments setPopUp={setPopUp} popUp={popUp} />
+            <ViewComments
+              setPopUp={setPopUp}
+              popUp={popUp}
+              addComments={addComments}
+            />
           </div>
         ) : null}
 

@@ -13,10 +13,6 @@ export const PopUpComments = ({ setPopUp, popUp }) => {
             X
           </div>
         </div>
-        <textarea></textarea>
-        <div className="flex">
-          <button className="px-5 py-1 border rounded-md bg-[#]">Añadir</button>
-        </div>
       </div>
     </div>
   );

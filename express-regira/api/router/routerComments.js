@@ -107,17 +107,17 @@ router.post('/comment', checkToken, async (req, res, next) => {
 });
 
 //Endpoint para crear un comment en una tarea especifico con un usuario especifico tiene que ir con el checkToken
-router.post('/comment/:tareaId/user/:idUser', async (req, res, next) => {
-  const { title, commenttext } = req.body;
-  const { tareaId, idUser } = req.params;
+//En un proyecto en especifico
+router.post('/comment/:tareaId/user/:idUser/project/:idProject', async (req, res, next) => {
+  const { comment } = req.body;
+  const { tareaId, idUser, idProject } = req.params;
   try {
-    const comment = await Comment.create({
-      title,
-      commenttext,
+    const commentTask = await Comment.create({
+      title: comment,
       usuario_id: idUser,
       tareas_id: tareaId,
     });
-    res.status(201).json(comment);
+    res.status(201).json(commentTask);
   } catch (error) {
     res.status(404).json({ error: error.message });
   }

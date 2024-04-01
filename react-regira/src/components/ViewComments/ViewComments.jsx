@@ -1,4 +1,12 @@
-const ViewComments = ({ setPopUp, popUp }) => {
+import { useState } from "react";
+
+const ViewComments = ({ setPopUp, popUp, addComments }) => {
+  const [comment, setComment] = useState('');
+
+  const onChangeComment = (event) => {
+    setComment(event.target.value);
+  }
+
   return (
     <div className="z-50 absolute flex justify-center items-center h-full w-full backdrop-blur-sm">
       <div className="bg-white w-1/3 h-96 border rounded-md border-[#2581FF] px-5 py-3">
@@ -37,10 +45,11 @@ const ViewComments = ({ setPopUp, popUp }) => {
               name="comment"
               className="border border-[#2581FF] rounded-md w-full h-20 placeholder:px-1 py-1"
               placeholder="Añade el comentario"
+              onChange={onChangeComment}
             ></textarea>
           </div>
           <div className="">
-            <button className="bg-[#2581FF] px-5 py-1 text-white border rounded-md">
+            <button className="bg-[#2581FF] px-5 py-1 text-white border rounded-md" onClick={() => addComments(popUp.idTask, comment)}>
               Añadir
             </button>
           </div>
